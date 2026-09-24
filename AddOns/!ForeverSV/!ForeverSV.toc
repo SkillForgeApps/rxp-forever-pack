@@ -1,0 +1,8 @@
+## Interface: 16001, 11509
+## Title: Forever Saved-Data Restore
+## Notes: Puts back addon saved data the Forever beta client fails to load. Data.lua is written by the sync helper (ForeverSync.ps1).
+## Author: Gaz + Claude
+## Version: 0.1
+
+Data.lua
+Restore.lua
