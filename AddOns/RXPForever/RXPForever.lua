@@ -1402,6 +1402,35 @@ step
     .isQuestTurnedIn 5728
 step
     #completewith next
+    .goto Orgrimmar,45.120,63.889
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Doras|r
+    .fly Thunder Bluff >> Fly to Thunder Bluff
+    .target Doras
+    .zoneskip Thunder Bluff
+    .onanyquest 5723,5724
+step
+    .goto 1456/1,-218.13,-1055.97
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Rahauro|r on the Elder Rise
+    .turnin -5724 >> Turn in Returning the Lost Satchel
+    .turnin -5723 >> Turn in Testing an Enemy's Strength
+    .target Rahauro
+step
+    >>|cRXP_WARN_Varimathras is last: back to Orgrimmar for the zeppelin to Undercity|r
+    .hs >> Hearth to Orgrimmar
+    .use 6948
+    .cooldown item,6948,>2,1
+    .bindlocation 1637,1
+    .zoneskip Thunder Bluff,1
+    .isQuestComplete 5725
+step
+    .goto 1456/1,26.1,-1196.66
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Tal|r
+    .fly Orgrimmar >> Fly to Orgrimmar
+    .target Tal
+    .zoneskip Thunder Bluff,1
+    .isQuestComplete 5725
+step
+    #completewith next
     .goto 1411/1,-4648.55,1321.88,40 >> Go up the Zeppelin Tower outside Orgrimmar
     .zone Tirisfal Glades >> Take the Zeppelin to Tirisfal Glades for Varimathras
     .isQuestComplete 5725
@@ -1430,45 +1459,6 @@ step
     .turnin 5725 >> Turn in The Power to Destroy...
     .target Varimathras
     .isQuestComplete 5725
-step
-    #completewith next
-    .goto 1458,52.45,89.49,15,0
-    .goto 1458,48.80,87.63,15,0
-    .goto 1458,46.18,83.63,15,0
-    .goto 1458,45.31,78.24,15,0
-    .goto 1458,46.28,73.10,15,0
-    .goto 1458,51.88,64.84,20,0
-    .goto 1458,64.42,64.62,20,0
-    .goto 1458,65.50,56.75,20,0
-    .goto 1420/0,235.32,1883.89
-    .zone Tirisfal Glades >> Exit Undercity by the elevators
-    .zoneskip Undercity,1
-step
-    .goto 1420/0,278.70,2071.27,12,0
-    .goto 1420/0,253.85,2059.82,10,0
-    .goto 1420/0,264.70,2053.50,8,0
-    .goto 1420/0,271.02,2064.94,8,0
-    .goto 1420/0,259.72,2068.86,8,0
-    .goto 1420/0,261.53,2055.00,8,0
-    .goto 1420/0,299.04,2069.46,-1
-    .goto 1420/0,279.61,2441.21,-1
-    .zone Durotar >> Take the Zeppelin back to Durotar
-    .zoneskip Durotar
-    .continentskip 1415,1
-step
-    #completewith next
-    .goto Orgrimmar,45.120,63.889
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Doras|r
-    .fly Thunder Bluff >> Fly to Thunder Bluff
-    .target Doras
-    .zoneskip Thunder Bluff
-    .onanyquest 5723,5724
-step
-    .goto 1456/1,-218.13,-1055.97
-    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Rahauro|r
-    .turnin -5724 >> Turn in Returning the Lost Satchel
-    .turnin -5723 >> Turn in Testing an Enemy's Strength
-    .target Rahauro
 ]])
 end
 
