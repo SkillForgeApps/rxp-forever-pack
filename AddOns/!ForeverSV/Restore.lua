@@ -39,39 +39,74 @@ end
 
 -- ===== Gamepad UI on/off button (25 Sep, Gaz: "an add on that turns off the gamepad ui without reloading the ui, a
 -- small icon I can click") =====
--- Flips the client's gamepad master switch (the setting the Settings > Gamepad option writes), live, no reload.
--- The switch is found at login from the client's own list of settings: GamePadEnable if it exists, otherwise the
--- first gamepad setting whose name says Enable/Enabled/Active. Every gamepad setting found (name = value) is kept in
--- RXPCData.rxpForever.gamepadCVars so it can be read from the saved file. Not in combat. If the game refuses the
--- change (protected setting), chat says so and nothing else happens. Shift-drag to move.
+-- Flips Settings > Gameplay > Gamepad (Alpha) > "Enable Gamepad UI (Alpha)" live, no reload. NOT GamePadEnable: that
+-- one is controller INPUT (Gaz: turning it off "unplugs the controller" and the gamepad UI stays up).
+-- The option is found in Blizzard's own settings panel by its label ("Gamepad UI") and flipped through the same
+-- setting object the tickbox uses (setting:SetValue), so it behaves exactly like clicking the box. Fallback: a few
+-- likely CVar names. What was found (label, variable, categories searched) is kept in
+-- RXPCData.rxpForever.gamepadUIDiag so it can be read from the saved file. Not in combat. Shift-drag to move.
 do
-	local cvarName
-	local function findSwitch()
-		local found, names = {}, {}
-		if C_Console and C_Console.GetAllCommands then
-			local ok, cmds = pcall(C_Console.GetAllCommands)
-			if ok and type(cmds) == "table" then
-				for _, c in ipairs(cmds) do
-					local n = c.command
-					if type(n) == "string" and n:lower():find("gamepad", 1, true) then
-						names[#names + 1] = n
-						local v = C_CVar and C_CVar.GetCVar and C_CVar.GetCVar(n)
-						if v ~= nil then found[n] = v end
+	local target, diag = nil, {}
+	local function walk(cat, out)
+		if not cat then return end
+		out[#out + 1] = cat
+		if cat.GetSubcategories then
+			local ok, subs = pcall(cat.GetSubcategories, cat)
+			if ok and type(subs) == "table" then for _, s in ipairs(subs) do walk(s, out) end end
+		end
+	end
+	local function findByLabel()
+		if not (SettingsPanel and SettingsPanel.GetAllCategories and SettingsPanel.GetLayout) then diag.panel = "no SettingsPanel API"; return end
+		local cats = {}
+		local ok, all = pcall(SettingsPanel.GetAllCategories, SettingsPanel)
+		for _, c in ipairs(ok and all or {}) do walk(c, cats) end
+		diag.categories = #cats
+		for _, cat in ipairs(cats) do
+			local ok2, layout = pcall(SettingsPanel.GetLayout, SettingsPanel, cat)
+			if ok2 and layout and layout.GetInitializers then
+				for _, init in ipairs(layout:GetInitializers() or {}) do
+					local setting = (init.GetSetting and init:GetSetting()) or (init.data and init.data.setting)
+					local name = setting and setting.GetName and setting:GetName()
+					if type(name) == "string" and name:lower():find("gamepad ui", 1, true) then
+						diag.label = name
+						diag.variable = setting.GetVariable and tostring(setting:GetVariable()) or "?"
+						return setting
 					end
 				end
 			end
 		end
+	end
+	local CANDIDATES = { "GamePadUIEnabled", "GamepadUIEnabled", "GamePadEnableUI", "GamePadUI", "gamePadUI",
+		"enableGamepadUI", "useGamepadUI", "GamePadUseUI" }
+	local function find()
+		if target then return target end
+		local s = findByLabel()
+		if s then
+			target = { setting = s, name = diag.label, var = diag.variable }
+		elseif C_CVar and C_CVar.GetCVar then
+			for _, n in ipairs(CANDIDATES) do
+				if C_CVar.GetCVar(n) ~= nil then target = { cvar = n, name = n, var = n }; diag.cvar = n; break end
+			end
+		end
 		if RXPCData then
 			RXPCData.rxpForever = RXPCData.rxpForever or {}
-			RXPCData.rxpForever.gamepadCVars = found
+			diag.found = target and target.name or "nothing"
+			RXPCData.rxpForever.gamepadUIDiag = diag
 		end
-		if C_CVar and C_CVar.GetCVar and C_CVar.GetCVar("GamePadEnable") ~= nil then return "GamePadEnable" end
-		table.sort(names)
-		for _, n in ipairs(names) do
-			if found[n] ~= nil and (n:find("Enable") or n:find("Active")) then return n end
-		end
+		return target
 	end
-	local function isOn() return cvarName and C_CVar.GetCVarBool(cvarName) end
+	local function isOn()
+		if not target then return false end
+		if target.setting then
+			local ok, v = pcall(target.setting.GetValue, target.setting)
+			return ok and (v == true or v == 1 or v == "1")
+		end
+		return C_CVar.GetCVarBool(target.cvar)
+	end
+	local function setOn(v)
+		if target.setting then return pcall(target.setting.SetValue, target.setting, v) end
+		return pcall(C_CVar.SetCVar, target.cvar, v and "1" or "0")
+	end
 
 	local b = CreateFrame("Button", "ForeverGamepadButton", UIParent)
 	b:SetSize(24, 24)
@@ -92,10 +127,9 @@ do
 	end
 	local function say(msg) print("|cff33ff99Gamepad UI:|r " .. msg) end
 	b:SetScript("OnClick", function()
-		if not cvarName then say("this client has no gamepad on/off setting I can find.") return end
+		if not find() then say("couldn't find the \"Enable Gamepad UI\" option - /reload and tell Claude.") return end
 		if InCombatLockdown() then say("can't switch in combat - try again when combat ends.") return end
-		local want = isOn() and "0" or "1"
-		local ok, err = pcall(C_CVar.SetCVar, cvarName, want)
+		local ok, err = setOn(not isOn())
 		if not ok then say("the game refused the change (" .. tostring(err) .. ").") end
 		if C_Timer then C_Timer.After(0.2, refresh) else refresh() end
 	end)
@@ -103,9 +137,10 @@ do
 	b:SetScript("OnDragStop", b.StopMovingOrSizing)
 	b:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:AddLine("Gamepad UI: " .. (cvarName and (isOn() and "|cff40ff40on|r" or "|cffff5555off|r") or "|cff888888not found|r"))
-		GameTooltip:AddLine("Click to switch the controller interface on / off (no reload, not in combat).", 1, 1, 1, true)
-		if cvarName then GameTooltip:AddLine("Setting: " .. cvarName, 0.7, 0.7, 0.7) end
+		find()
+		GameTooltip:AddLine("Gamepad UI: " .. (target and (isOn() and "|cff40ff40on|r" or "|cffff5555off|r") or "|cff888888not found|r"))
+		GameTooltip:AddLine("Click to switch the controller interface on / off (no reload, not in combat). Controller input stays on.", 1, 1, 1, true)
+		if target then GameTooltip:AddLine("Setting: " .. tostring(target.name) .. " (" .. tostring(target.var) .. ")", 0.7, 0.7, 0.7) end
 		GameTooltip:AddLine("Shift-drag to move.", 0.7, 0.7, 0.7)
 		GameTooltip:Show()
 	end)
@@ -117,8 +152,8 @@ do
 	ev:RegisterEvent("ADDON_ACTION_BLOCKED")
 	ev:SetScript("OnEvent", function(_, event, a1, a2)
 		if event == "PLAYER_LOGIN" then
-			cvarName = findSwitch()
-			refresh()
+			-- the settings panel registers its categories as the UI loads; look a moment after login
+			if C_Timer then C_Timer.After(3, function() find(); refresh() end) else find(); refresh() end
 		elseif event == "CVAR_UPDATE" then
 			refresh()
 		elseif (event == "ADDON_ACTION_FORBIDDEN" or event == "ADDON_ACTION_BLOCKED") and a1 == "!ForeverSV" then
