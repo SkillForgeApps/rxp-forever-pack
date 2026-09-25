@@ -37,6 +37,67 @@ do
 	end)
 end
 
+-- ===== Gamepad UI on/off icon (25 Sep, Gaz: "add the icon back, I understand it will reload the ui but its still
+-- quicker than opening options unticking etc when im in a dungeon or stress situation") =====
+-- Does exactly what Blizzard's Settings > Gameplay > Gamepad > "Enable Gamepad UI (Alpha)" tickbox does
+-- (Blizzard_SettingsDefinitions_Shared/Gamepad.lua: GAMEPAD_INTERFACE_TOGGLE sets the CVar InputDeviceInterfaceStyle
+-- to Enum.InputDeviceInterfaceType.Gamepad or .Mkb), then reloads the UI straight away, because the gamepad UI is
+-- built at UI load. One click, or Ctrl+Shift+G (only bound if that key is free). Controller INPUT (GamePadEnable) is
+-- never touched here - the first version flipped that and left the controller dead. Shift-drag to move.
+do
+	local b = CreateFrame("Button", "ForeverGamepadButton", UIParent)
+	b:SetSize(24, 24)
+	b:SetFrameStrata("HIGH")
+	b:SetClampedToScreen(true)
+	b:SetMovable(true)
+	b:RegisterForDrag("LeftButton")
+	b:SetPoint("TOP", ForeverReloadButton, "BOTTOM", 0, -4)
+	local icon = b:CreateTexture(nil, "ARTWORK")
+	icon:SetAllPoints()
+	icon:SetTexture("Interface\\Icons\\INV_Gizmo_01")
+	icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+	b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+	local function uiOn() return InputUtil and InputUtil.IsGamepadUIEnabled and InputUtil.IsGamepadUIEnabled() end
+	local function refresh()
+		local on = uiOn()
+		icon:SetDesaturated(not on)
+		icon:SetAlpha(on and 1 or 0.6)
+	end
+	b:SetScript("OnClick", function()
+		local T = Enum and Enum.InputDeviceInterfaceType
+		if not (T and T.Gamepad and T.Mkb) then
+			print("|cff33ff99Gamepad UI:|r this client has no interface-style setting - use Settings > Gameplay > Gamepad.")
+			return
+		end
+		local ok, err = pcall(C_CVar.SetCVar, "InputDeviceInterfaceStyle", uiOn() and T.Mkb or T.Gamepad)
+		if not ok then
+			print("|cff33ff99Gamepad UI:|r the game refused the switch (" .. tostring(err) .. ").")
+			return
+		end
+		ReloadUI()
+	end)
+	b:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then self:StartMoving() end end)
+	b:SetScript("OnDragStop", b.StopMovingOrSizing)
+	b:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:AddLine("Gamepad UI: " .. (uiOn() and "|cff40ff40on|r" or "|cffff5555off|r"))
+		GameTooltip:AddLine("Click (or Ctrl+Shift+G) to switch it " .. (uiOn() and "off" or "on") ..
+			" and reload the UI straight away.", 1, 1, 1, true)
+		GameTooltip:AddLine("Shift-drag to move.", 0.7, 0.7, 0.7)
+		GameTooltip:Show()
+	end)
+	b:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	local ev = CreateFrame("Frame")
+	ev:RegisterEvent("PLAYER_LOGIN")
+	ev:SetScript("OnEvent", function()
+		refresh()
+		local action = GetBindingAction and GetBindingAction("CTRL-SHIFT-G")
+		if (action == nil or action == "") and not InCombatLockdown() then
+			SetOverrideBindingClick(b, true, "CTRL-SHIFT-G", "ForeverGamepadButton")
+		end
+	end)
+end
+
 -- ===== Mouse buttons back with the Gamepad UI on (25 Sep, Gaz: "keep it as is but add a train/interact ui button for
 -- the mouse"; then "on opening my mailbox I'm back to the same issue, can you implement it on the mail box etc") =====
 -- With "Enable Gamepad UI (Alpha)" on, Blizzard hides each window's mouse buttons (Train, Send, Reply, Close...) in the
