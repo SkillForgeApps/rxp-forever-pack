@@ -39,3 +39,5 @@ pointed the arrow at the first one.
 - **Cooking and Mining** (`add_cooking_mining_undead.py`): like the Dun Morogh guide in Coldridge - loot Stringy Wolf
   Meat from the Darkhounds and Worgs you pass and cook Charred Wolf Meat to Cooking 50, and mine the Copper Veins you
   pass to Mining 20 while you're on Camping 101: Mining.
+- **Brill book** (`add_metabook_waypoint.py`): the "loot the Book in the shelf" step gets a waypoint - the Alchemy
+  trainer's house as you enter Brill, potion shelf on the right.

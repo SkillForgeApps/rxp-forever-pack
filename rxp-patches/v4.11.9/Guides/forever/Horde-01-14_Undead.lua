@@ -1447,7 +1447,9 @@ step
     .xp <7,1
 step
     #label MetaBook
-    >>Loot the |cRXP_PICK_Book|r in the shelf
+    .goto 1420,59.4,52.3
+    >>Loot the |cRXP_PICK_Book|r (Apothecary Society Primer) in the shelf - inside the Alchemy trainer's house (|cRXP_FRIENDLY_Carolai Anise|r) as you enter Brill, the potion shelf on the right
+    -- [RXPForever] MetaBook waypoint (Wowhead Forever object 405879)
     .collect 208185,1 --The Apothecary's Metaphysical Primer (x1
     --TODO: Add turnin in UC later, wowhead says Mage class q but I completed it on Paladin too
 step
