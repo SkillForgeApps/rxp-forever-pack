@@ -371,7 +371,7 @@ armFrame:SetScript("OnEvent", function(_, event)
 	pcall(armTurnIns)
 end)
 
--- ===== Take guide quests early + "nearby" note (25 Sep, Gaz: the guide wasn't "picking up quests or handing quests
+-- ===== Take guide quests early (25 Sep, Gaz: the guide wasn't "picking up quests or handing quests
 -- in near me yet sending me on"; asked whether it breaks the routing - no - then "ok do it") =====
 -- RXP only auto-accepts a quest whose step is the current one (RXPGuides.lua QuestAutoAccept: step.active or the
 -- step before). Its gossip / greeting / quest-detail automation all ask RXP.QuestAutoAccept, so wrapping that one
@@ -379,9 +379,8 @@ end)
 -- Not taken: RXP's disabled quests, quests retired with /rxpcatchup skip, accepts the guide flags as "no auto
 -- accept" (flag 0x1), and quests the guide doesn't accept at all (e.g. ones RXP commented out on purpose). Later
 -- accept/turn-in steps then complete themselves (the quest is in the log / turned in), so the route is unchanged.
--- Hand-ins were already covered by armTurnIns above.
--- The note: a line under the waypoint arrow when a LATER step's quest giver / hand-in is within 40 yd, e.g.
--- "Nearby: Coleman Farthing - 2 to pick up (the guide does them later)".
+-- Hand-ins were already covered by armTurnIns above. (A "Nearby: ..." note under the arrow was tried and removed -
+-- Gaz didn't want it.)
 do
 	local cacheGuide, acceptIds, acceptTitles
 	local function build(guide)
@@ -425,75 +424,13 @@ do
 		RXP.QuestAutoAccept = wrapped
 	end
 
-	-- nearby note
-	local function nearbyText()
-		local g = RXP and RXP.currentGuide
-		local H = LibStub and LibStub("HereBeDragons-2.0", true)
-		if not (g and g.steps and H and RXP.GetGuideProgress) then return "" end
-		local px, py, inst = H:GetPlayerWorldPosition()
-		if not px then return "" end
-		local cur = RXP.GetGuideProgress() or 1
-		local byNpc, order = {}, {}
-		for i = cur + 1, #g.steps do
-			local step = g.steps[i]
-			local pick, hand, wx, wy, winst, npc = 0, 0
-			for _, e in ipairs(step.elements or {}) do
-				local id = type(e.questId) == "number" and e.questId > 0 and e.questId
-				if id and e.tag == "accept" and not isOnQuest(id) and not isTurnedIn(id) and not skippedQuests()[id] then
-					pick = pick + 1
-				elseif id and e.tag == "turnin" and isOnQuest(id) and objectivesDone(id) then
-					hand = hand + 1
-				elseif e.wx and e.wy and not wx then
-					wx, wy, winst = e.wx, e.wy, e.instance
-				elseif e.tag == "target" and e.targets and e.targets[1] and not npc then
-					npc = e.targets[1]
-				end
-			end
-			if (pick > 0 or hand > 0) and wx and (winst == nil or winst == inst) then
-				local _, dist = H:GetWorldVector(inst, px, py, wx, wy)
-				if dist and dist < 40 then
-					local key = npc or "a quest NPC"
-					if not byNpc[key] then byNpc[key] = { 0, 0 }; order[#order + 1] = key end
-					byNpc[key][1] = byNpc[key][1] + pick
-					byNpc[key][2] = byNpc[key][2] + hand
-				end
-			end
-		end
-		local parts = {}
-		for n, key in ipairs(order) do
-			if n > 2 then break end
-			local c = byNpc[key]
-			local what = {}
-			if c[1] > 0 then what[#what + 1] = c[1] .. " to pick up" end
-			if c[2] > 0 then what[#what + 1] = c[2] .. " to hand in" end
-			parts[#parts + 1] = key .. " - " .. table.concat(what, ", ")
-		end
-		if #parts == 0 then return "" end
-		return "Nearby: " .. table.concat(parts, "; ") .. " (the guide does them later)"
-	end
-	local nf, acc, last = CreateFrame("Frame"), 0, nil
+	local nf, acc = CreateFrame("Frame"), 0
 	nf:SetScript("OnUpdate", function(_, dt)
 		acc = acc + (dt or 0)
 		if acc < 1 then return end
 		acc = 0
 		RXP = RXP or _G.RXP
-		if not RXP then return end
-		hookAutoAccept()
-		local af = _G.RXPG_ARROW
-		if not (af and af.rxpfSummary and af.CreateFontString) then return end
-		if not af.rxpfNearby then
-			local fs = af:CreateFontString(nil, "OVERLAY")
-			fs:SetPoint("TOP", af.rxpfSummary, "BOTTOM", 0, -2)
-			fs:SetWidth(280)
-			fs:SetJustifyH("CENTER")
-			fs:SetTextColor(0.4, 1, 0.4)
-			local font, size, flags = af.rxpfSummary:GetFont()
-			if font then pcall(fs.SetFont, fs, font, size or 9, flags or "OUTLINE") end
-			af.rxpfNearby = fs
-		end
-		local ok, text = pcall(nearbyText)
-		text = ok and text or ""
-		if text ~= last then af.rxpfNearby:SetText(text); last = text end
+		if RXP then hookAutoAccept() end
 	end)
 end
 

@@ -18,9 +18,8 @@ RestedXP forgets your guide, your step and your settings. This pack puts that da
 - **Trainer automation on:** RestedXP buys the guide's spells when you open a class trainer (its own option,
   which is off by default; switch it off in RestedXP's options if you prefer).
 - **Auto hand-in for any finished quest the guide covers**, even when the hand-in step isn't the current one.
-- **Takes the guide's quests early** when you talk to their NPC, even if that step comes later, and shows a
-  "Nearby: <NPC> - 2 to pick up" line under the arrow when a later step's quest giver or hand-in is close. The
-  route doesn't change: the later steps tick themselves off.
+- **Takes the guide's quests early** when you talk to their NPC, even if that step comes later. The route doesn't
+  change: the later steps tick themselves off.
 - **Guide edits don't lose your place.** Your step is remembered by what it is, not by line number.
 - **Fold the step list:** a -/+ button on the guide-name bar hides the step list and keeps the current-step box
   (handy in dungeons). Remembered per guide.
