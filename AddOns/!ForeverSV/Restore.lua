@@ -37,35 +37,80 @@ do
 	end)
 end
 
--- ===== Mouse Train button with the gamepad UI on (25 Sep, Gaz: "keep it as is but add a train/interact ui button for
--- the mouse") =====
--- With "Enable Gamepad UI (Alpha)" on, Blizzard's trainer hides its own Train and close buttons
--- (ClassTrainerFrameMixin:InitializeGamepad in Blizzard_TrainerUI) and leaves only the footer prompt "A Train".
--- The gamepad UI stays as it is. This just puts Blizzard's own buttons back, so the mouse can train too. They keep their
--- normal logic (greyed out when you can't afford a skill or have no profession slot; profession confirm popup).
--- A live gamepad-UI switch isn't possible: Blizzard's own tickbox reloads the UI.
+-- ===== Mouse buttons back with the Gamepad UI on (25 Sep, Gaz: "keep it as is but add a train/interact ui button for
+-- the mouse"; then "on opening my mailbox I'm back to the same issue, can you implement it on the mail box etc") =====
+-- With "Enable Gamepad UI (Alpha)" on, Blizzard hides each window's mouse buttons (Train, Send, Reply, Close...) in the
+-- window's InitializeGamepad and leaves only the footer prompts. Blizzard runs that init ONCE, when the window is
+-- created (InputUtil.RegisterGamepadInit calls it straight away when the gamepad UI is on), and again only on a
+-- gamepad-UI switch, which reloads the UI. So each button is shown once after its window exists. The gamepad UI and
+-- footer stay as they are, and Blizzard's normal show/hide rules still apply afterwards (quest Decline, book page
+-- arrows...). List taken from every InitializeGamepad in Blizzard's Forever UI source (Gethe/wow-ui-source,
+-- branch forever). Left out: buttons Blizzard hides again on every update while the gamepad UI is on (vendor page
+-- arrows, Report Spam), and glue / chat / raid-frame / buff bits. A path that doesn't exist on this client is skipped.
 do
-	local function keepShown(btn)
-		if not btn or btn.foreverKeepShown then return end
-		btn.foreverKeepShown = true
-		hooksecurefunc(btn, "Hide", function(self) self:Show() end)
-		btn:Show()
+	local BUTTONS = {
+		-- trainer
+		"ClassTrainerTrainButton", "ClassTrainerFrame.CloseButton",
+		-- mailbox: inbox, open letter, send
+		"MailFrame.CloseButton", "InboxFrame.OpenAllMail", "InboxFrame.PrevPageButton", "InboxFrame.NextPageButton",
+		"OpenMailFrame.CloseButton", "OpenMailFrame.ReplyButton", "OpenMailFrame.DeleteButton", "OpenMailFrame.CancelButton",
+		"SendMailFrame.SendButton", "SendMailFrame.CancelButton",
+		-- vendor
+		"MerchantFrameCloseButton",
+		-- quest giver and gossip
+		"QuestFrameAcceptButton", "QuestFrameDeclineButton", "QuestFrameCompleteButton", "QuestFrameCompleteQuestButton",
+		"QuestFrameGoodbyeButton", "QuestFrameGreetingGoodbyeButton", "QuestFrameCloseButton",
+		"GossipFrame.GreetingPanel.GoodbyeButton", "GossipFrameCloseButton",
+		-- books / letters, loot, master loot
+		"ItemTextFrame.CloseButton", "ItemTextPrevPageButton", "ItemTextNextPageButton",
+		"LootFrame.ClosePanelButton", "MasterLooterFrame.CloseButton",
+		-- character, equipment sets, bags, inspect
+		"CharacterFrameCloseButton", "PaperDollFrame.EquipmentManagerPane.EquipSet",
+		"PaperDollFrame.EquipmentManagerPane.SaveSet", "ContainerFrameCombinedBags.CloseButton", "InspectFrame.CloseButton",
+		-- professions, spellbook
+		"ProfessionsFrame.CloseButton", "ProfessionsFrame.CraftingPage.LinkButton",
+		"PlayerSpellsFrame.CloseButton", "PlayerSpellsFrame.TabSystem",
+		"PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame.PagingControls.PrevPageButton",
+		"PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame.PagingControls.NextPageButton",
+		-- world map and quest log details
+		"WorldMapFrame.CloseButton", "QuestMapFrame.QuestsFrame.DetailsFrame.BackFrame.BackButton",
+		"QuestMapFrame.QuestsFrame.DetailsFrame.AbandonButton", "QuestMapFrame.QuestsFrame.DetailsFrame.ShareButton",
+		"QuestMapFrame.QuestsFrame.DetailsFrame.TrackButton",
+		-- split stack, colour picker
+		"StackSplitFrame.OkayButton", "StackSplitFrame.CancelButton",
+		"ColorPickerFrame.Footer.OkayButton", "ColorPickerFrame.Footer.CancelButton",
+	}
+	local done = {}
+	local function resolve(path)
+		local t = _G
+		for part in path:gmatch("[^%.]+") do
+			if type(t) ~= "table" then return nil end
+			t = t[part]
+		end
+		return (type(t) == "table" and t.Show) and t or nil
 	end
-	local function install()
-		if not ClassTrainerFrame or not ClassTrainerTrainButton then return false end
-		keepShown(ClassTrainerTrainButton)
-		keepShown(ClassTrainerFrame.CloseButton)
-		-- sit above the gamepad footer in case they overlap
-		ClassTrainerTrainButton:SetFrameLevel(ClassTrainerFrame:GetFrameLevel() + 20)
-		return true
+	local function pass()
+		if not (InputUtil and InputUtil.IsGamepadUIEnabled and InputUtil.IsGamepadUIEnabled()) then return end
+		for _, path in ipairs(BUTTONS) do
+			if not done[path] then
+				local btn = resolve(path)
+				if btn then
+					done[path] = true
+					pcall(btn.Show, btn)
+				end
+			end
+		end
+		-- the trainer's Train button sits where the gamepad footer is; keep it clickable above it
+		if ClassTrainerTrainButton and ClassTrainerFrame and not done.trainLevel then
+			done.trainLevel = true
+			ClassTrainerTrainButton:SetFrameLevel(ClassTrainerFrame:GetFrameLevel() + 20)
+		end
 	end
-	if not install() then
-		local tf = CreateFrame("Frame")
-		tf:RegisterEvent("ADDON_LOADED")
-		tf:SetScript("OnEvent", function(self, _, name)
-			if name == "Blizzard_TrainerUI" and install() then self:UnregisterAllEvents() end
-		end)
-	end
+	pass()
+	local f = CreateFrame("Frame")
+	f:RegisterEvent("ADDON_LOADED")      -- load-on-demand windows (trainer, professions, inspect...) appear here
+	f:RegisterEvent("PLAYER_LOGIN")
+	f:SetScript("OnEvent", pass)
 end
 
 local data = ForeverSVData
