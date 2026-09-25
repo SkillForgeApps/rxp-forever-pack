@@ -378,7 +378,7 @@ end)
 local function snapshotQuests()
 	if not RXPCData or not C_QuestLog or not C_QuestLog.GetNumQuestLogEntries then return end
 	-- on a real logout the client has already wiped the character by PLAYER_LOGOUT (quest levels 0, every quest
-	-- "not turned in" - seen 25 Sep, Karnage-Redeemed): keep the last good snapshot instead
+	-- "not turned in" - seen 25 Sep on a new character): keep the last good snapshot instead
 	if UnitHealthMax and UnitHealthMax("player") == 0 then return end
 	local log = {}
 	for i = 1, C_QuestLog.GetNumQuestLogEntries() do

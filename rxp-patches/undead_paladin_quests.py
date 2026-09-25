@@ -1,7 +1,7 @@
 """Undead Paladin class quests in RXP's forever/Horde-01-14_Undead.lua - builds the whole fix from RXP's ORIGINAL file.
 
 SUPERSEDES skip_coming_to_terms.py and add_rediscovering_the_light.py (25 Sep 2026, same day):
-  - Gaz's level-4 Undead Paladin (Karnage-Redeemed) was never offered Coming to Terms (91208) -> first skipped it.
+  - a level-4 Undead Paladin was never offered Coming to Terms (91208) -> first skipped it.
   - He then asked for Rediscovering the Light (90902, which RXP had commented out as "only 85xp, not worth doing").
   - After handing 90902 in, Coming to Terms appeared at Aramis: "rediscovering the light is the prequest to coming to
     terms". Wowhead Forever lists no prerequisite for 91208 - this link is from Gaz's own play.
