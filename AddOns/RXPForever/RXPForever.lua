@@ -976,6 +976,27 @@ do
 	end)
 end
 
+-- ===== Trainer automation on by default (25 Sep, Gaz: "I want it to auto train judgement and blessing ... next time") =====
+-- RXP can buy the guide's .train spells (and its list of useful generic spells) when a trainer window opens
+-- (RXPGuides.lua OnTrainer, setting "Trainer automation" = profile.enableTrainerAutomation), but the setting has no
+-- default, so it is off on every new profile - and Forever's first-name-only UnitName makes a new profile per name.
+-- Switch it on once per profile where it has never been set; a deliberate "off" in RXP's options is left alone.
+do
+	local ta = CreateFrame("Frame")
+	ta:RegisterEvent("PLAYER_LOGIN")
+	ta:SetScript("OnEvent", function()
+		if not C_Timer then return end
+		C_Timer.After(2, function()
+			local R = _G.RXP
+			local p = R and R.settings and R.settings.profile
+			if p and p.enableTrainerAutomation == nil then
+				p.enableTrainerAutomation = true
+				print("|cff33ff99RXPForever:|r trainer automation switched on - RXP now buys the guide's spells when you open a trainer.")
+			end
+		end)
+	end)
+end
+
 -- ===== .continentskip for RXP guides =====
 -- .continentskip <continentMapID>[,1] skips the step while you are on that continent (flag 1: while you are NOT).
 -- Kalimdor = 1414, Eastern Kingdoms = 1415. Modelled on RXP's own .zoneskip (functions.lua) and re-checked on the

@@ -15,6 +15,8 @@ RestedXP forgets your guide, your step and your settings. This pack puts that da
 - **Catch-up:** `/rxpcatchup` reads your quest log and jumps the guide to the first step you still need.
 - **Smarter skipping:** travel steps (fly, hearth, zeppelin) are skipped when you already have what they were going for.
   "Only on this continent" checks work.
+- **Trainer automation on:** RestedXP buys the guide's spells when you open a class trainer (its own option,
+  which is off by default; switch it off in RestedXP's options if you prefer).
 - **Auto hand-in for any finished quest the guide covers**, even when the hand-in step isn't the current one.
 - **Guide edits don't lose your place.** Your step is remembered by what it is, not by line number.
 - **Fold the step list:** a -/+ button on the guide-name bar hides the step list and keeps the current-step box
