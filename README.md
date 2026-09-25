@@ -19,6 +19,8 @@ RestedXP forgets your guide, your step and your settings. This pack puts that da
 - **Guide edits don't lose your place.** Your step is remembered by what it is, not by line number.
 - **A one-line summary of the current step under the waypoint arrow**, e.g. *Talk to Tundra MacGrann in the hut*.
 - **Emergency reload button** by the minimap, plus **Ctrl+Shift+R**, for when the controller or chat stops responding.
+- **Mouse Train button with the Gamepad UI on:** the trainer window keeps its Train and close buttons, so you can
+  click them as well as pressing A.
 - **Dungeon quest guides:** *Ragefire Chasm* and *Ruins of Lordaeron* (Horde). They start from wherever you are and only
   send you where you still need to go.
 - **Guide fixes for RestedXP v4.11.9:**
