@@ -41,3 +41,5 @@ pointed the arrow at the first one.
   pass to Mining 20 while you're on Camping 101: Mining.
 - **Brill book** (`add_metabook_waypoint.py`): the "loot the Book in the shelf" step gets a waypoint - the Alchemy
   trainer's house as you enter Brill, potion shelf on the right.
+- **Sevren on the way** (`add_sevren_on_the_way.py`): hand in *Return to the Magistrate* in Brill on the way to
+  Agamand Mills instead of after it.

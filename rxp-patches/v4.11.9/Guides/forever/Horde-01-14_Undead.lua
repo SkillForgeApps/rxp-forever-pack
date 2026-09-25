@@ -2059,6 +2059,13 @@ step
     .target Rand Rhobart
     -- [RXPForever] Camping 101 hand-in
 step
+    .goto 1420/0,265.15,2305.94
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Sevren|r in Brill on your way north
+    .turnin 360 >>Turn in Return to the Magistrate
+    .isOnQuest 360
+    .target Magistrate Sevren
+    -- [RXPForever] Sevren on the way (Brill is on the way from Linnea to Agamand Mills)
+step
     #label AgamandStart
     .goto 1420/0,882.41,2511.1,100,0
     .goto 1420/0,892.80,2520.74
