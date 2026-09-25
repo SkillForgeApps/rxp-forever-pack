@@ -412,6 +412,40 @@ snapFrame:SetScript("OnEvent", function(_, event)
 	pcall(snapshotQuests)
 end)
 
+-- ===== Track dungeon guide quests (25 Sep, Gaz: "make it auto track ... keep it for dungeon pre quests for now") =====
+-- Blizzard only auto-tracks a new quest that shows a counter (QuestMapFrame: GetNumQuestLeaderBoards > 0), so
+-- "A Frightened Request" (investigate, no counter) never showed on the tracker, and the quest log files it under
+-- Undercity rather than Ruins of Lordaeron. While a guide from a "Dungeon" group is active, every quest of that guide
+-- that is in the log gets ticked for tracking. Each quest is ticked once per session, so untracking one by hand sticks.
+local trackedOnce = {}
+local function trackDungeonQuests()
+	local guide = RXP and RXP.currentGuide
+	if not (guide and guide.steps and type(guide.group) == "string" and guide.group:lower():find("dungeon", 1, true)) then return end
+	if not (C_QuestLog and C_QuestLog.AddQuestWatch and C_QuestLog.GetNumQuestWatches) then return end
+	local max = (Constants and Constants.QuestWatchConsts and Constants.QuestWatchConsts.MAX_QUEST_WATCHES) or 25
+	for _, step in ipairs(guide.steps) do
+		for _, el in ipairs(step.elements or {}) do
+			local id = type(el.questId) == "number" and el.questId
+			if id and not trackedOnce[id] and isOnQuest(id) then
+				trackedOnce[id] = true
+				local watched = QuestUtils_IsQuestWatched and QuestUtils_IsQuestWatched(id)
+				if not watched and C_QuestLog.GetNumQuestWatches() < max then C_QuestLog.AddQuestWatch(id) end
+			end
+		end
+	end
+end
+local trackFrame = CreateFrame("Frame")
+trackFrame:RegisterEvent("QUEST_ACCEPTED")
+trackFrame:RegisterEvent("QUEST_LOG_UPDATE")
+trackFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+local lastTrack = 0
+trackFrame:SetScript("OnEvent", function(_, event)
+	local now = GetTime and GetTime() or 0
+	if event == "QUEST_LOG_UPDATE" and now - lastTrack < 2 then return end
+	lastTrack = now
+	pcall(trackDungeonQuests)
+end)
+
 -- ===== Generic travel skip (24 Sep, Gaz: "applied across the whole add on regardless of guide") =====
 -- RXP skips accept / complete / turn-in steps the game says are done, but a pure travel step (fly, hearth, go to,
 -- take the zeppelin, enter a zone) has nothing to complete, so it runs even when the quest step it leads to is

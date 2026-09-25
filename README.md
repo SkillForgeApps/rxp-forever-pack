@@ -25,6 +25,8 @@ RestedXP forgets your guide, your step and your settings. This pack puts that da
   Train / Send / Reply / Accept / close buttons, so you can click them as well as using the controller.
 - **Dungeon quest guides:** *Ragefire Chasm* and *Ruins of Lordaeron* (Horde). They start from wherever you are and only
   send you where you still need to go.
+  While one is active, all its quests in your log are ticked to show on the quest tracker, including ones Blizzard
+  doesn't track by itself (quests with no counter, like *A Frightened Request*).
 - **Guide fixes for RestedXP v4.11.9:**
   - **Dun Morogh:** Father Gavin's chain (Dawn in the Mountains, Finding Warmth, Rime's Wrath, Treacherous Cold), Never
     Saddle on Quality, The Quarry's Smith and the Camping 101 profession quests.
