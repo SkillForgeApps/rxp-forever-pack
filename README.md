@@ -38,6 +38,8 @@ RestedXP forgets your guide, your step and your settings. This pack puts that da
   - **Pickups:** one step per rifle for the rifle pickups.
   - **Mulgore:** Camp Narache waypoint.
   - **Horde mage:** Samophlange valves.
+  - **Tirisfal (Undead):** the Undead Paladin quest chain (Rediscovering the Light -> Coming to Terms), Camping 101,
+    and Cooking / Mining levelling like Coldridge.
   - **Gamepad:** a fix for the gamepad "interact" lock-up that RestedXP could trigger.
 
 ## Install

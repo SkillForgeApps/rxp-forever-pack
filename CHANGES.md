@@ -26,3 +26,16 @@ used to disappear once *Rites of the Earthmother* was accepted, even with quests
 ## `Guides/forever/Horde-Mage-12-21.lua` - Samophlange valves
 The Regulator and Main Control valves are split into one step each. A step with two fixed-spot objectives only ever
 pointed the arrow at the first one.
+
+## `Guides/forever/Horde-01-14_Undead.lua` - Tirisfal Glades (Undead)
+- **Undead Paladin class quests** (`undead_paladin_quests.py`): *Rediscovering the Light* (heal 5 Injured Deathguard
+  around Deathknell's chapel) is back in the guide - it unlocks *Coming to Terms*, which the guide asked for but could
+  never be offered without it. The chain now runs Rediscovering the Light -> Coming to Terms (the Frightened Paladin,
+  with a waypoint) -> Continue Your Training. Each part is its own step that only shows when it applies, so skipping
+  one never blocks the guide.
+- **Camping 101** (`add_camping101_undead.py`): after *The Great Outdoors*, Eleanor Shackleton's Camping 101 quests -
+  Cooking (learn it from William Pickman in Brill) and one per profession, each only if you have that profession, with
+  the hand-ins at the Brill, Undercity-road and Undercity trainers once you reach skill 20.
+- **Cooking and Mining** (`add_cooking_mining_undead.py`): like the Dun Morogh guide in Coldridge - loot Stringy Wolf
+  Meat from the Darkhounds and Worgs you pass and cook Charred Wolf Meat to Cooking 50, and mine the Copper Veins you
+  pass to Mining 20 while you're on Camping 101: Mining.
