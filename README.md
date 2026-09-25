@@ -17,6 +17,8 @@ RestedXP forgets your guide, your step and your settings. This pack puts that da
   "Only on this continent" checks work.
 - **Auto hand-in for any finished quest the guide covers**, even when the hand-in step isn't the current one.
 - **Guide edits don't lose your place.** Your step is remembered by what it is, not by line number.
+- **Fold the step list:** a -/+ button on the guide-name bar hides the step list and keeps the current-step box
+  (handy in dungeons). Remembered per guide.
 - **A one-line summary of the current step under the waypoint arrow**, e.g. *Talk to Tundra MacGrann in the hut*.
 - **Emergency reload button** by the minimap, plus **Ctrl+Shift+R**, for when the controller or chat stops responding.
 - **Gamepad UI on/off icon** under it, plus **Ctrl+Shift+G**: switches Blizzard's Gamepad UI on or off and reloads in one

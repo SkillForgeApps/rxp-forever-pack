@@ -867,6 +867,85 @@ f:SetScript("OnEvent", function()
 	if RXP then hookSetStep() end
 end)
 
+-- ===== Fold the step list, keep the current-step box (25 Sep, Gaz: "minimise or turn off the quest window steps
+-- ... but keep the top window which lists what needs to be done in the dungeon") =====
+-- A -/+ button on the guide-name bar. RXP already has this layout: a guide with `#hidewindow` gets a 28px window
+-- (current-step box + name bar) and no step list (GuideWindow.lua, end of BottomFrame.UpdateFrame), and it saves /
+-- restores the full height itself (settings.profile.frameHeight). The button sets or clears that flag on the current
+-- guide and asks RXP to redraw (updateBottomFrame), so RXP's own code does the folding. Remembered per guide
+-- (RXPCData.rxpForever.folded[guide name]) and re-applied when a folded guide is loaded. Classic window only (RXP's
+-- beta V2 window has its own layout).
+do
+	local function folded()
+		RXPCData.rxpForever = RXPCData.rxpForever or {}
+		RXPCData.rxpForever.folded = RXPCData.rxpForever.folded or {}
+		return RXPCData.rxpForever.folded
+	end
+	local fb, lastGuide
+	local function apply(guide, on)
+		local R = _G.RXP
+		if not (R and guide and RXPCData) then return end
+		if R.v2 and R.v2.IsGuideWindowEnabled and R.v2:IsGuideWindowEnabled() then return end
+		if guide.rxpfOwnHide == nil then guide.rxpfOwnHide = guide.hidewindow and true or false end
+		if guide.rxpfOwnHide then return end   -- the guide folds itself (#hidewindow) - leave it alone
+		guide.hidewindow = on or nil
+		-- un-fold: RXP keeps the list hidden while its area is under 30px (first branch of its check), so give the
+		-- window its saved height back first; RXP then shows the list itself
+		local win = R.RXPFrame
+		if not on and win and win:GetHeight() < 50 then
+			local h = R.settings and R.settings.profile and R.settings.profile.frameHeight
+			win:SetHeight(math.max(tonumber(h) or 200, 50))
+		end
+		R.updateBottomFrame = true
+		if fb then
+			fb:SetNormalTexture(on and "Interface\\Buttons\\UI-PlusButton-Up" or "Interface\\Buttons\\UI-MinusButton-Up")
+			fb:SetPushedTexture(on and "Interface\\Buttons\\UI-PlusButton-Down" or "Interface\\Buttons\\UI-MinusButton-Down")
+		end
+	end
+	local function setup()
+		local R = _G.RXP
+		local bar = R and R.RXPFrame and R.RXPFrame.GuideName
+		if fb or not bar then return end
+		fb = CreateFrame("Button", "RXPForeverFoldButton", bar)
+		fb:SetSize(14, 14)
+		fb:SetPoint("RIGHT", bar, "RIGHT", -6, 0)
+		fb:SetFrameLevel(bar:GetFrameLevel() + 5)
+		fb:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-Up")
+		fb:SetPushedTexture("Interface\\Buttons\\UI-MinusButton-Down")
+		fb:SetHighlightTexture("Interface\\Buttons\\UI-PlusButton-Hilight", "ADD")
+		fb:SetScript("OnClick", function()
+			local g = _G.RXP and _G.RXP.currentGuide
+			if not (g and g.name) then return end
+			local on = not folded()[g.name]
+			folded()[g.name] = on or nil
+			apply(g, on)
+		end)
+		fb:SetScript("OnEnter", function(self)
+			GameTooltip:SetOwner(self, "ANCHOR_TOP")
+			local g = _G.RXP and _G.RXP.currentGuide
+			local on = g and g.name and folded()[g.name]
+			GameTooltip:AddLine(on and "Show the step list" or "Fold the step list")
+			GameTooltip:AddLine("Keeps the current step box. Remembered for this guide.", 1, 1, 1, true)
+			GameTooltip:Show()
+		end)
+		fb:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	end
+	-- set up once RXP's window exists, and re-apply the saved fold whenever the loaded guide changes
+	local w, acc = CreateFrame("Frame"), 0
+	w:SetScript("OnUpdate", function(_, dt)
+		acc = acc + (dt or 0)
+		if acc < 1 then return end
+		acc = 0
+		if not RXPCData then return end
+		setup()
+		local g = _G.RXP and _G.RXP.currentGuide
+		if g and g ~= lastGuide then
+			lastGuide = g
+			apply(g, g.name and folded()[g.name] or false)
+		end
+	end)
+end
+
 -- ===== .continentskip for RXP guides =====
 -- .continentskip <continentMapID>[,1] skips the step while you are on that continent (flag 1: while you are NOT).
 -- Kalimdor = 1414, Eastern Kingdoms = 1415. Modelled on RXP's own .zoneskip (functions.lua) and re-checked on the
