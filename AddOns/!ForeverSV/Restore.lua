@@ -106,11 +106,24 @@ do
 			ClassTrainerTrainButton:SetFrameLevel(ClassTrainerFrame:GetFrameLevel() + 20)
 		end
 	end
+	-- Gamepad UI on but controller input (GamePadEnable) off = a controller UI the controller can't drive. Happened
+	-- 25 Sep: the first version of the removed gamepad icon flipped GamePadEnable and it was left at 0 in Config.wtf.
+	-- Put input back on at login / reload.
+	local function inputGuard()
+		if not (InputUtil and InputUtil.IsGamepadUIEnabled and InputUtil.IsGamepadUIEnabled()) then return end
+		if not (C_CVar and C_CVar.GetCVar and C_CVar.GetCVar("GamePadEnable") == "0") then return end
+		if pcall(C_CVar.SetCVar, "GamePadEnable", "1") then
+			print("|cff33ff99Gamepad:|r controller input was switched off while the Gamepad UI is on - switched it back on.")
+		end
+	end
 	pass()
 	local f = CreateFrame("Frame")
 	f:RegisterEvent("ADDON_LOADED")      -- load-on-demand windows (trainer, professions, inspect...) appear here
 	f:RegisterEvent("PLAYER_LOGIN")
-	f:SetScript("OnEvent", pass)
+	f:SetScript("OnEvent", function(_, event)
+		pass()
+		if event == "PLAYER_LOGIN" then inputGuard() end
+	end)
 end
 
 local data = ForeverSVData
