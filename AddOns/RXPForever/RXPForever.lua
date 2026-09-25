@@ -689,6 +689,101 @@ sumFrame:SetScript("OnUpdate", function(_, dt)
 	end
 end)
 
+-- ===== Guide window toggle button (25 Sep, Gaz: "add a minimise button to the rxp add on visually so I can flick it
+-- on and off as required") =====
+-- Left-click: hide / show the guide window, exactly like RXP's own "Hide Window" option (the arrow and its step
+-- summary keep working). Right-click: hide / show everything RXP draws, like /rxp toggle. Shift-drag to move; the
+-- position is remembered per character. The icon is greyed while the window is hidden. Uses RXP's settings, so the
+-- state survives reloads.
+do
+	local btn = CreateFrame("Button", "RXPForeverToggleButton", UIParent)
+	btn:SetSize(26, 26)
+	btn:SetFrameStrata("HIGH")
+	btn:SetClampedToScreen(true)
+	btn:SetMovable(true)
+	btn:RegisterForDrag("LeftButton")
+	btn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	local icon = btn:CreateTexture(nil, "ARTWORK")
+	icon:SetAllPoints()
+	icon:SetTexture("Interface\\Icons\\INV_Misc_Book_09")
+	icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+	btn:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+	local border = btn:CreateTexture(nil, "OVERLAY")
+	border:SetPoint("TOPLEFT", -2, 2)
+	border:SetPoint("BOTTOMRIGHT", 2, -2)
+	border:SetColorTexture(0, 0, 0, 0)
+
+	local function profile()
+		local rxp = _G.RXP
+		return rxp and rxp.settings and rxp.settings.profile, rxp
+	end
+	local function refresh()
+		local prof = profile()
+		local hidden = prof and (prof.hideGuideWindow or prof.showEnabled == false)
+		icon:SetDesaturated(hidden and true or false)
+		icon:SetAlpha(hidden and 0.6 or 1)
+	end
+	local function place()
+		btn:ClearAllPoints()
+		local pos = RXPCData and RXPCData.rxpForever and RXPCData.rxpForever.toggleBtnPos
+		if pos then
+			btn:SetPoint(pos[1], UIParent, pos[2], pos[3], pos[4])
+		elseif _G.ForeverReloadButton then
+			btn:SetPoint("RIGHT", _G.ForeverReloadButton, "LEFT", -4, 0)
+		elseif Minimap then
+			btn:SetPoint("TOPRIGHT", Minimap, "BOTTOMLEFT", -24, 8)
+		else
+			btn:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -220, -170)
+		end
+	end
+
+	btn:SetScript("OnClick", function(_, button)
+		local prof, rxp = profile()
+		if not prof then return end
+		if button == "RightButton" then
+			if rxp.settings.ToggleActive then rxp.settings.ToggleActive() end
+		else
+			if prof.showEnabled == false and rxp.settings.ToggleActive then
+				rxp.settings.ToggleActive()          -- everything was off: bring RXP back first
+				prof.hideGuideWindow = false
+			else
+				prof.hideGuideWindow = not prof.hideGuideWindow
+			end
+			if rxp.RXPFrame then rxp.RXPFrame:SetShown(not prof.hideGuideWindow and prof.showEnabled ~= false) end
+			if rxp.v2 and rxp.v2.events then
+				pcall(rxp.v2.events.Trigger, rxp.v2.events, "GuideWindowRefresh", "visibility",
+					not prof.hideGuideWindow and prof.showEnabled ~= false)
+			end
+		end
+		refresh()
+	end)
+	btn:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then self:StartMoving() end end)
+	btn:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing()
+		local p1, _, p2, x, y = self:GetPoint(1)
+		if RXPCData then
+			RXPCData.rxpForever = RXPCData.rxpForever or {}
+			RXPCData.rxpForever.toggleBtnPos = { p1, p2, x, y }
+		end
+	end)
+	btn:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:AddLine("RestedXP guide")
+		GameTooltip:AddLine("Left-click: hide / show the guide window (arrow keeps working)", 1, 1, 1, true)
+		GameTooltip:AddLine("Right-click: hide / show everything, arrow included", 1, 1, 1, true)
+		GameTooltip:AddLine("Shift-drag to move.", 0.7, 0.7, 0.7)
+		GameTooltip:Show()
+	end)
+	btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+	local ev = CreateFrame("Frame")
+	ev:RegisterEvent("PLAYER_ENTERING_WORLD")
+	ev:SetScript("OnEvent", function()
+		place()
+		if C_Timer then C_Timer.After(3, refresh) else refresh() end   -- RXP applies its settings a moment after login
+	end)
+end
+
 SLASH_RXPCATCHUP1 = "/rxpcatchup"
 SLASH_RXPCATCHUP2 = "/catchup"
 -- /rxpcatchup skip [questId]  -> retire a quest: every step that accepts, completes or turns it in is flagged.
