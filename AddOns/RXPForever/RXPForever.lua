@@ -929,6 +929,33 @@ do
 			GameTooltip:Show()
 		end)
 		fb:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+		-- drag strip along the top of the current-step box (Gaz: "step 19 window not moveable, make it moveable from
+		-- the top"). The step's text lines cover the box and take the mouse, so RXP's own drag on the box rarely
+		-- gets the click. This strip sits above them and calls RXP's own handlers (respects Lock Frames, saves the
+		-- position like dragging RXP's window).
+		local box = R.RXPFrame.CurrentStepFrame
+		if box and R.RXPFrame.OnMouseDown then
+			local grip = CreateFrame("Frame", "RXPForeverStepGrip", box)
+			grip:SetPoint("TOPLEFT", box, "TOPLEFT", 0, 10)
+			grip:SetPoint("TOPRIGHT", box, "TOPRIGHT", 0, 10)
+			grip:SetHeight(20)
+			grip:SetFrameLevel(box:GetFrameLevel() + 20)
+			grip:EnableMouse(true)
+			local hl = grip:CreateTexture(nil, "HIGHLIGHT")
+			hl:SetAllPoints()
+			hl:SetColorTexture(1, 1, 1, 0.08)
+			grip:SetScript("OnMouseDown", function(self, button)
+				if button == "LeftButton" then R.RXPFrame.OnMouseDown(self, button) end
+			end)
+			grip:SetScript("OnMouseUp", function(self, button) R.RXPFrame.OnMouseUp(self, button) end)
+			grip:SetScript("OnEnter", function(self)
+				GameTooltip:SetOwner(self, "ANCHOR_TOP")
+				GameTooltip:AddLine("Drag to move the guide window")
+				GameTooltip:Show()
+			end)
+			grip:SetScript("OnLeave", function() GameTooltip:Hide() end)
+		end
 	end
 	-- set up once RXP's window exists, and re-apply the saved fold whenever the loaded guide changes
 	local w, acc = CreateFrame("Frame"), 0
