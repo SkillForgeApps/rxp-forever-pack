@@ -43,3 +43,5 @@ pointed the arrow at the first one.
   trainer's house as you enter Brill, potion shelf on the right.
 - **Sevren on the way** (`add_sevren_on_the_way.py`): hand in *Return to the Magistrate* in Brill on the way to
   Agamand Mills instead of after it.
+- **Undercity sewers** (`add_sewer_entrance.py`): the "go into the Undercity through the sewers" arrow starts at the
+  sewer entrance outside, not at a point inside the tunnel.

@@ -2361,6 +2361,7 @@ step << Warlock
     .complete 1473,1 --Egalin's Grimoire (1)
 step
     #completewith UCHome
+    .goto 1420/0,724.25,1682.66,30,0   -- [RXPForever] sewer entrance (outside end of RXP's own sewer exit chain)
     .goto 1458/0,714.8,1604.24,35,0
     .goto 1458/0,652.73,1623.44,35,0
     .goto 1458/0,634.02,1669.66,35,0
