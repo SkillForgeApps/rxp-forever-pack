@@ -721,12 +721,20 @@ local function showRewardChoiceIcon(icon, rewardButton, point, x, y)
     local overlay = icon.overlay
 
     if not overlay then
-        overlay = _G.CreateFrame("Frame", nil, rewardButton)
+        -- RXPForever: overlay parented to UIParent, not the reward button: Blizzard's gamepad SmartNavigation hooks CreateFrame and
+        -- refreshes the open window's navigation from addon code, which taints the gamepad UI until /reload
+        overlay = _G.CreateFrame("Frame", nil, _G.UIParent)
+        overlay:SetScript("OnUpdate", function(self)
+            local b = self.rxpRewardButton
+            if not (b and b:IsVisible()) then self:Hide() end
+        end)
 
         icon.overlay = overlay
-    else
-        overlay:SetParent(rewardButton)
     end
+    overlay.rxpRewardButton = rewardButton
+    overlay:ClearAllPoints()
+    overlay:SetAllPoints(rewardButton)
+    overlay:SetFrameStrata(rewardButton:GetFrameStrata())
 
     overlay:SetFrameLevel(rewardButton:GetFrameLevel() + 1)
     overlay:Show()

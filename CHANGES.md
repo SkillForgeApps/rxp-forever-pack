@@ -7,6 +7,13 @@ Five `HideUIPanel(QuestFrame)` calls and one `HideUIPanel(MerchantFrame)` call a
 code they taint the UI panel manager. The game then blocks `SetPreferredGamepadInteractTarget()`, and controller
 interaction (and sometimes chat) stops working until a reload. The quest and merchant windows still close normally.
 
+## `RXPGuides.lua` - quest reward icon outside the quest window (`patch_rxp_reward_icon_parent.py`)
+RXP's best-reward icon created its frame inside the quest reward window. With the gamepad UI on, Blizzard's gamepad
+navigation refreshes itself whenever a frame is created inside an open window, so that refresh ran in addon code and
+the navigation stayed tainted until a reload: closing windows or bags with the controller then failed
+(`SetPreferredGamepadInteractTarget()`, blamed on RXPGuides). Found with `/console taintLog 11`. The icon's frame now
+sits on the main UI, over the reward button, and looks the same.
+
 ## `map.lua` - no world-map flash (`patch_rxp_no_map_flash.py`)
 Before drawing route lines RXP opened and shut the world map from addon code whenever the map had not been opened
 yet (after every reload). That taints the gamepad UI the same way, so closing bags or windows with the controller
