@@ -7,6 +7,12 @@ Five `HideUIPanel(QuestFrame)` calls and one `HideUIPanel(MerchantFrame)` call a
 code they taint the UI panel manager. The game then blocks `SetPreferredGamepadInteractTarget()`, and controller
 interaction (and sometimes chat) stops working until a reload. The quest and merchant windows still close normally.
 
+## `map.lua` - no world-map flash (`patch_rxp_no_map_flash.py`)
+Before drawing route lines RXP opened and shut the world map from addon code whenever the map had not been opened
+yet (after every reload). That taints the gamepad UI the same way, so closing bags or windows with the controller
+was blocked (`SetPreferredGamepadInteractTarget()`, blamed on RXPGuides). The lines are now skipped until you open
+the map, and RXPForever draws them the first time it is open.
+
 ## `Guides/forever/Alliance-1-14_DwarfGnome.lua` - Dun Morogh (both the normal and the Hunter guide)
 - **Camping 101** (`add_camping101.py`): the Cooking quest from Eric Brighthammer and the profession quests at the
   campfire, each only if you have that profession, with their hand-ins in Kharanos/Iceflow and Ironforge.

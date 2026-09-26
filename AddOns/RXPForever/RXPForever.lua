@@ -884,6 +884,28 @@ do
 	end)
 end
 
+-- ===== Map lines after the map is first opened (26 Sep) =====
+-- rxp-forever/patches/patch_rxp_no_map_flash.py stops RXP flashing WorldMapFrame open and shut from addon code (that
+-- tainted the gamepad UI: "AddOn 'RXPGuides' tried to call the protected function SetPreferredGamepadInteractTarget").
+-- RXP only did it to give the map canvas a size before drawing route lines, so the lines are now skipped until the
+-- map has been opened once. This redraws them the first time the map is open with a real size - in a fresh
+-- execution (C_Timer), never from inside the map's own show.
+do
+	local w, acc = CreateFrame("Frame"), 0
+	w:SetScript("OnUpdate", function(self, dt)
+		acc = acc + (dt or 0)
+		if acc < 0.5 then return end
+		acc = 0
+		local map = _G.WorldMapFrame
+		local rxp = _G.RXP
+		if not (map and map:IsShown() and rxp and rxp.UpdateMap and rxp.currentGuide) then return end
+		local canvas = map.GetCanvas and map:GetCanvas()
+		if not canvas or canvas:GetWidth() == 0 then return end
+		self:SetScript("OnUpdate", nil)
+		C_Timer.After(0, function() pcall(rxp.UpdateMap, true) end)
+	end)
+end
+
 SLASH_RXPCATCHUP1 = "/rxpcatchup"
 SLASH_RXPCATCHUP2 = "/catchup"
 -- /rxpcatchup skip [questId]  -> retire a quest: every step that accepts, completes or turns it in is flagged.
