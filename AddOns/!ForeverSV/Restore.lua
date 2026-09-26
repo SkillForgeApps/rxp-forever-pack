@@ -187,6 +187,55 @@ do
 	end)
 end
 
+-- ===== Our icons on the minimap ring (26 Sep, Gaz: "getting quite the collection of mini icons, can you move them to
+-- the outer ring of the minimap") =====
+-- The guide book (RXPForever), reload, gamepad UI, to-do list and gear snapshot icons (ForeverGear) sit on the ring,
+-- round the bottom from the potion icon towards the moon. Shift-drag slides an icon round the ring; where it's
+-- dropped is kept in ForeverSVRing (account-wide). Each addon still places its own icon first (and the book re-places
+-- itself on every loading screen), so this runs a frame after each loading screen and wins. An addon that isn't
+-- installed is skipped.
+do
+	local ICONS = {   -- name, default angle in degrees (0 = right, 90 = top, counter-clockwise)
+		{ "RXPForeverToggleButton", 250 }, { "ForeverReloadButton", 272 }, { "ForeverGamepadButton", 294 },
+		{ "ForeverGearTodoButton", 316 }, { "ForeverGearSnapshotButton", 338 },
+	}
+	local function saved() ForeverSVRing = type(ForeverSVRing) == "table" and ForeverSVRing or {} return ForeverSVRing end
+	local function put(b, deg)
+		-- centre on the ring edge; offsets are in the icon's own units (it's parented to UIParent, the map may be scaled)
+		local r = (Minimap:GetWidth() / 2 + 4) * Minimap:GetEffectiveScale() / b:GetEffectiveScale()
+		local a = math.rad(deg)
+		b:ClearAllPoints()
+		b:SetPoint("CENTER", Minimap, "CENTER", r * math.cos(a), r * math.sin(a))
+	end
+	local function follow(self)   -- while shift-dragging: the angle from the minimap centre to the cursor
+		local mx, my = Minimap:GetCenter()
+		local s = Minimap:GetEffectiveScale()
+		local cx, cy = GetCursorPosition()
+		self.ringDeg = math.deg(math.atan2(cy / s - my, cx / s - mx)) % 360
+		put(self, self.ringDeg)
+	end
+	local function ring()
+		if not Minimap then return end
+		for _, e in ipairs(ICONS) do
+			local b = _G[e[1]]
+			if b then
+				if not b.foreverRing then
+					b.foreverRing = true
+					b:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then self:SetScript("OnUpdate", follow) end end)
+					b:SetScript("OnDragStop", function(self)
+						self:SetScript("OnUpdate", nil)
+						if self.ringDeg then saved()[e[1]] = self.ringDeg end
+					end)
+				end
+				put(b, saved()[e[1]] or e[2])
+			end
+		end
+	end
+	local f = CreateFrame("Frame")
+	f:RegisterEvent("PLAYER_ENTERING_WORLD")
+	f:SetScript("OnEvent", function() if C_Timer then C_Timer.After(0, ring) else ring() end end)
+end
+
 local data = ForeverSVData
 if type(data) ~= "table" then return end
 

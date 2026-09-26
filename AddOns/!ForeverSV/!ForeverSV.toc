@@ -2,7 +2,8 @@
 ## Title: Forever Saved-Data Restore
 ## Notes: Puts back addon saved data the Forever beta client fails to load. Data.lua is written by the sync helper (ForeverSync.ps1).
 ## Author: Gaz + Claude
-## Version: 0.1
+## Version: 0.2
+## SavedVariables: ForeverSVRing
 
 Data.lua
 Restore.lua

@@ -23,7 +23,7 @@ $LogFile = Join-Path $DataDir 'sync.log'
 $SizesFile = Join-Path $DataDir 'sv_sizes.json'
 $StateOut = Join-Path $WowPath 'Interface\AddOns\RXPForever\State.lua'
 $SvOut = Join-Path $WowPath 'Interface\AddOns\!ForeverSV\Data.lua'
-$SvAddons = @('RXPGuides')      # account files restored through !ForeverSV (RXPGuides = RXPSettings/RXPData/RXPDB)
+$SvAddons = @('RXPGuides', '!ForeverSV')      # account files restored through !ForeverSV (RXPGuides = RXPSettings/RXPData/RXPDB)
 $Poll = 500                     # ms
 $Settle = 0.5                   # s a file must be unchanged before it is read (WoW may still be writing)
 
