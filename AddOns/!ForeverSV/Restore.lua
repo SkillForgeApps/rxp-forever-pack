@@ -236,6 +236,87 @@ do
 	f:SetScript("OnEvent", function() if C_Timer then C_Timer.After(0, ring) else ring() end end)
 end
 
+-- ===== Addon pages in the Settings window must not taint it (27 Sep, Gaz: ticking "Auto Sell Junk" in RXP's options
+-- then closing the window -> "fatality" + dead controller; taint.log level 11, 22:48) =====
+-- Blizzard calls every addon page's OnRefresh when the Settings window opens (CallRefreshOnCanvases,
+-- Blizzard_SettingsPanel.lua:607) and its OnCommit when it closes (CommitCanvases, :592), directly. RXP's options page
+-- (AceGUI BlizOptionsGroup: OnCommit/OnDefault/OnRefresh) and Auctionator's pages (PanelConfig.lua:16-18) set both, so
+-- the rest of the open - including the gamepad scan of the window's buttons (SmartNavigation FindButtons) - and the
+-- close ran as addon code; closing then hit SetPreferredGamepadInteractTarget "blocked" with Auctionator blamed.
+-- Each addon page registered after this file loads (we load first) gets its OnRefresh moved to the page's OnShow and
+-- its OnCommit to the page's OnHide: script handlers don't pass their taint back to Blizzard's code, and both addons
+-- still get the call at the same moment. OnDefault is left alone (only runs when "Defaults" is pressed).
+-- Second half (22:58, the move alone didn't stop it - 22:55:11 same error with it loaded): Auctionator creates its pages
+-- as SHOWN children of the Settings window at load (Source/Config/InitializeFrames.lua:3, Configuration.lua:7), so they
+-- sit in the window whether or not their page is open. Ticking an RXP option rebuilds RXP's page, the gamepad
+-- navigation rescans the window's buttons (SmartNavigation FindButtons: "tainted by Auctionator while reading field
+-- 151") and from then on runs as Auctionator's code. So every addon page is hidden at login; Blizzard shows a page
+-- itself when it is selected. (Auctionator's top page overrides Show with an empty function, so that one landing page
+-- may stay blank - its sub-pages hold the options.)
+do
+	local MOVE = { OnRefresh = "OnShow", OnCommit = "OnHide" }
+	local pages = {}
+	local function guard(frame)
+		if type(frame) ~= "table" or not frame.HookScript then return end
+		local addonPage = false
+		for field, script in pairs(MOVE) do
+			local fn = rawget(frame, field)
+			if type(fn) == "function" and not issecurevariable(frame, field) then
+				addonPage = true   -- an addon set this page's callbacks; Blizzard's own pages never get here
+				frame[field] = nil
+				frame:HookScript(script, function(self) pcall(fn, self) end)
+			end
+		end
+		if addonPage then table.insert(pages, frame) end
+	end
+	if Settings and Settings.RegisterCanvasLayoutCategory then
+		hooksecurefunc(Settings, "RegisterCanvasLayoutCategory", function(frame) guard(frame) end)
+		hooksecurefunc(Settings, "RegisterCanvasLayoutSubcategory", function(_, frame) guard(frame) end)
+	end
+	local function hideAll()
+		if SettingsPanel and SettingsPanel:IsShown() then return end   -- never while the window is open
+		for _, frame in ipairs(pages) do
+			if frame.IsShown and frame:IsShown() then pcall(frame.Hide, frame) end
+		end
+	end
+	local f = CreateFrame("Frame")
+	f:RegisterEvent("PLAYER_LOGIN")
+	f:SetScript("OnEvent", function()
+		hideAll()
+		if C_Timer then C_Timer.After(2, hideAll) end   -- pages added a little after login
+	end)
+end
+
+-- ===== Auctionator's pages out of the Settings window (27 Sep 23:05) =====
+-- Proven by Gaz: with Auctionator switched off, ticking an RXP option and closing Settings no longer kills the
+-- controller; with it on, it still did even with the block above. Auctionator parents all its option pages to
+-- SettingsPanel (top page Config/Frame.xml OnLoad -> Configuration.lua:7; sub-pages Config/InitializeFrames.lua:3), so
+-- they are inside the window's frame tree and the gamepad navigation's button scan runs into them. Move every
+-- AuctionatorConfig* page into a hidden frame of ours: Blizzard's own pages and RXP's stay as they are. Auctionator's
+-- options are still in its Auction House tab; its Settings pages show empty. Runs after Auctionator's ADDON_LOADED and
+-- at login, so it works whichever of us handles the event first.
+do
+	local holder = CreateFrame("Frame")
+	holder:Hide()
+	local function evict()
+		if not SettingsPanel or SettingsPanel:IsShown() then return end
+		for _, c in ipairs({ SettingsPanel:GetChildren() }) do
+			local name = c.GetName and c:GetName()
+			if name and (name:find("^AuctionatorConfig") or name == "AuctionatorConfigurationFrameTemplate") then
+				pcall(c.SetParent, c, holder)
+			end
+		end
+	end
+	local f = CreateFrame("Frame")
+	f:RegisterEvent("ADDON_LOADED")
+	f:RegisterEvent("PLAYER_LOGIN")
+	f:SetScript("OnEvent", function(_, event, name)
+		if event == "PLAYER_LOGIN" or name == "Auctionator" then
+			if C_Timer then C_Timer.After(0, evict) else evict() end
+		end
+	end)
+end
+
 local data = ForeverSVData
 if type(data) ~= "table" then return end
 

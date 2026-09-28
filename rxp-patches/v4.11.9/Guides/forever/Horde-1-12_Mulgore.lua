@@ -1435,6 +1435,29 @@ step
     .turnin 833 >>Turn in A Sacred Burial
     .target Lorekeeper Raintotem
 step
+    #completewith TBFlightPath
+    .goto 1456/1,182.67,-1314.05,40,0
+    .zone Thunder Bluff >> Head into |cRXP_FRIENDLY_Thunder Bluff|r. Ride a lift up to the mesas
+    .zoneskip Thunder Bluff
+step
+    #label TBFlightPath
+    .goto 1456/1,26.1,-1196.66
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Tal|r at the top of the tower
+    >>|cRXP_WARN_The route flies you to Thunder Bluff from the Crossroads later - that needs this flight path. Tauren don't start with it on Forever|r
+    .fp Thunder Bluff >> Get the Thunder Bluff flight path
+    .target Tal
+step
+    #label TBJourney
+    .goto 1456/1,-109.58,-1209.75
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Cairne|r
+    .turnin 775 >>Turn in Journey into Thunder Bluff
+    .accept 776 >>Accept Rites of the Earthmother
+    .target Cairne Bloodhoof
+step
+    #completewith next
+    .zone Mulgore >> Take a lift back down to Mulgore
+    .zoneskip Thunder Bluff,1
+step
     #completewith next
     >>|cRXP_WARN_Finish getting the items for Mazzranache|r
     .complete 766,1 --Prairie Wolf Heart (1)
@@ -1942,7 +1965,7 @@ step << Tauren
 step
     #completewith CampTFP
     .goto 1412/1,-1527.78,-2341.62,100,0
-    .zone The Barrens >> Travel to The Barrens
+    .zone The Barrens >> Head east out of Mulgore to |cRXP_FRIENDLY_Camp Taurajo|r - it is just over the border into The Barrens
 step << !Druid
     .goto 1413/1,-1881.35,-2383.82
 	>>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Omusa|r
@@ -4793,6 +4816,28 @@ step
     .turnin 833 >>Turn in A Sacred Burial
     .target Lorekeeper Raintotem
 step
+    #completewith TBFlightPath
+    .goto 1456/1,182.67,-1314.05,40,0
+    .zone Thunder Bluff >> Head into |cRXP_FRIENDLY_Thunder Bluff|r. Ride a lift up to the mesas
+    .zoneskip Thunder Bluff
+step
+    #label TBFlightPath
+    .goto 1456/1,26.1,-1196.66
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Tal|r at the top of the tower
+    >>|cRXP_WARN_The route flies you to Thunder Bluff from the Crossroads later - that needs this flight path. Tauren don't start with it on Forever|r
+    .fp Thunder Bluff >> Get the Thunder Bluff flight path
+    .target Tal
+step
+    #label TBJourney
+    .goto 1456/1,-109.58,-1209.75
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Cairne|r
+    .turnin 775 >>Turn in Journey into Thunder Bluff
+    .target Cairne Bloodhoof
+step
+    #completewith next
+    .zone Mulgore >> Take a lift back down to Mulgore
+    .zoneskip Thunder Bluff,1
+step
     #xprate <2.1
     #completewith next
     >>|cRXP_WARN_Finish getting the items for Mazzranache|r
@@ -5302,7 +5347,7 @@ step << skip
     .target Mull Thunderhorn
 step
     .goto 1412/1,-1527.78,-2341.62,100,0
-    .zone The Barrens >> Travel to The Barrens
+    .zone The Barrens >> Head east out of Mulgore to |cRXP_FRIENDLY_Camp Taurajo|r - it is just over the border into The Barrens
     .isQuestAvailable 5922
 step << Druid
     .goto 1413/1,-1881.35,-2383.82

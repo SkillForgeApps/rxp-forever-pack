@@ -20,6 +20,11 @@ yet (after every reload). That taints the gamepad UI the same way, so closing ba
 was blocked (`SetPreferredGamepadInteractTarget()`, blamed on RXPGuides). The lines are now skipped until you open
 the map, and RXPForever draws them the first time it is open.
 
+## `InventoryManager.lua` - bags and the gamepad UI (`patch_rxp_no_bag_updateall.py`)
+RXP's junk-coin marker refreshed every bag window from addon code shortly after each bag opened. With the gamepad UI
+on, that blocked the controller (`SetOverrideBindingClick`, blamed on RXPGuides) until a reload. The coins are now drawn
+straight onto the bag slots instead.
+
 ## `Guides/forever/Alliance-1-14_DwarfGnome.lua` - Dun Morogh (both the normal and the Hunter guide)
 - **Camping 101** (`add_camping101.py`): the Cooking quest from Eric Brighthammer and the profession quests at the
   campfire, each only if you have that profession, with their hand-ins in Kharanos/Iceflow and Ironforge.
@@ -35,6 +40,12 @@ the map, and RXPForever draws them the first time it is open.
 ## `Guides/forever/Horde-1-12_Mulgore.lua` - Camp Narache (`fix_narache_waypoint.py`)
 Chief Hawkwind's hand-ins (Attack on Camp Narache, Rite of Strength) each get their own waypoint. The single waypoint
 used to disappear once *Rites of the Earthmother* was accepted, even with quests still to hand in.
+
+- **Camp Taurajo** (`fix_mulgore_barrens_text.py`): the "travel to The Barrens" step now says Camp Taurajo is just over
+  the border east of Mulgore.
+- **Thunder Bluff visit** (`add_tb_fp_mulgore.py`): Tauren don't start with the Thunder Bluff flight path on Forever, so
+  after *A Sacred Burial* the guide takes you up into Thunder Bluff: flight path from Tal, *Journey into Thunder Bluff*
+  to Cairne, then back down. The later "fly to Thunder Bluff" step works after that.
 
 ## `Guides/forever/Horde-Mage-12-21.lua` - Samophlange valves
 The Regulator and Main Control valves are split into one step each. A step with two fixed-spot objectives only ever
@@ -58,3 +69,6 @@ pointed the arrow at the first one.
   Agamand Mills instead of after it.
 - **Undercity sewers** (`add_sewer_entrance.py`): the "go into the Undercity through the sewers" arrow starts at the
   sewer entrance outside, not at a point inside the tunnel.
+- **Skull Rock** (`fix_skull_rock_waypoint.py`): the *Hidden Enemies* step (Lieutenant's Insignia) had one waypoint
+  written so that RXP never shows an arrow for it. It now uses RXP's own nine-point route through Skull Rock from the
+  Barrens guide.
