@@ -13,10 +13,11 @@ Patch: skip the lines while the canvas has no size (return). RXPForever redraws 
 opened (its "map lines after first open" block), so nothing is lost. Idempotent; backs up the original next to
 this script. Re-run after every RXP update. Revert: copy the backup over the installed map.lua.
 """
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import os
 import shutil
 
-RXP = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides"
+RXP = os.path.join(ADDONS, r"RXPGuides")
 HERE = os.path.dirname(os.path.abspath(__file__))
 TAG = "-- RXPForever: no WorldMapFrame Show/Hide from addon code (taints the gamepad UI); lines drawn after the map opens"
 

@@ -10,9 +10,10 @@ Blizzard_GamepadActionBars' SetPreferredGamepadInteractTarget() is blocked
 The windows close by themselves when the server confirms the accept / turn-in / sale, so the calls are
 commented out. Idempotent; backs up the originals next to this script. Re-run after every RXP update.
 Revert: copy the backups back over the installed files."""
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import os, shutil, sys
 
-RXP = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides"
+RXP = os.path.join(ADDONS, r"RXPGuides")
 HERE = os.path.dirname(os.path.abspath(__file__))
 TAG = "-- RXPForever: removed insecure HideUIPanel (taints the panel manager -> gamepad interact blocked)"
 

@@ -29,20 +29,30 @@ RestedXP forgets your guide, your step and your settings. This pack puts that da
   click, instead of going through the settings.
 - **Mouse buttons with the Gamepad UI on:** trainer, mailbox, quest, gossip, loot, bags, map and other windows keep their
   Train / Send / Reply / Accept / close buttons, so you can click them as well as using the controller.
-- **Dungeon quest guides:** *Ragefire Chasm* and *Ruins of Lordaeron* (Horde). They start from wherever you are and only
-  send you where you still need to go.
+- **Dungeon quest guides (Horde):** *Ragefire Chasm*, *Wailing Caverns*, *Ruins of Lordaeron* (with the in-dungeon run
+  order) and *Shadowfang Keep*. They start from wherever you are and only send you where you still need to go.
   While one is active, all its quests in your log are ticked to show on the quest tracker, including ones Blizzard
   doesn't track by itself (quests with no counter, like *A Frightened Request*).
+- **Quest-log safety net:** a chat line warns when a quest in your log was left behind by the guide, or a chain was
+  missed; `/rxpback` jumps back to it (`/rxpback check` lists them, `/rxpback off` mutes the warning).
+- **Class macro sets:** `/fmacros` adds ready-made macros to your character macro tab (Warrior: Tank Cycle).
+- **Pack version** in the guide window footer, so you can see which version you're running.
 - **Guide fixes for RestedXP v4.11.9:**
   - **Dun Morogh:** Father Gavin's chain (Dawn in the Mountains, Finding Warmth, Rime's Wrath, Treacherous Cold), Never
     Saddle on Quality, The Quarry's Smith and the Camping 101 profession quests.
   - **Vagash:** take Rudra's quest *before* pulling him (you get no fang otherwise).
   - **Pickups:** one step per rifle for the rifle pickups.
-  - **Mulgore:** Camp Narache waypoint.
+  - **Durotar:** Valley of Trials hand-ins right after the Skull Rock death-skip respawn, and the hearth back.
+  - **Mulgore:** Camp Narache waypoint, The Adventurer / The Great Outdoors and Camping 101 at Kaga Wildhoof, a
+    Thunder Bluff visit for the flight path (Tauren don't start with it on Forever), Camp Taurajo wording.
+  - **The Barrens:** the Ratchet innkeeper step no longer waits for Mud Snappers he doesn't sell.
+  - **Profession manuals:** a reminder to pick the Forever profession-manual reward in Durotar, Mulgore and Tirisfal.
   - **Horde mage:** Samophlange valves.
-  - **Tirisfal (Undead):** the Undead Paladin quest chain (Rediscovering the Light -> Coming to Terms), Camping 101,
-    and Cooking / Mining levelling like Coldridge.
-  - **Gamepad:** a fix for the gamepad "interact" lock-up that RestedXP could trigger.
+  - **Tirisfal (Undead):** the Undead Paladin chains (Rediscovering the Light -> Coming to Terms, and A Lesson in
+    Divinity to Redemption), the start of the lich chain (The Prodigal Lich, The Lich's Identity), Camping 101,
+    Cooking / Mining levelling like Coldridge, and waypoints for the Brill book, the Undercity sewers and Skull Rock.
+  - **Gamepad UI:** fixes for the controller lock-ups RestedXP could trigger - closing quest windows, the world map,
+    its map icons, the bag junk coins and the quest-reward icon - plus addon pages in the Settings window.
 
 ## Install
 
@@ -60,7 +70,8 @@ Nothing is sent anywhere. It only reads WoW's saved files and writes two addon f
 
 ## Update
 
-Download the new ZIP and run `install.bat` again. Your saved data is kept.
+Download the new ZIP and run `install.bat` again. Your saved data is kept, and guide files fixed by an older version
+of this pack are replaced with the new fixes.
 
 ## Uninstall
 

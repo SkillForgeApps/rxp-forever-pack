@@ -13,9 +13,11 @@ Data: Wowhead Forever, 23 Sep 2026.
 Placement: Dawn pickup at the last Kharanos inn visit; Gavin chain just before Rudra (Vagash section); Never
 Saddle accepted with Protecting the Herd, pelts right after the Gol'Bolar Quarry hand-ins, then back to Rudra.
 All completes/turn-ins use negative IDs (skip if not on the quest). Idempotent."""
+import os
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import sys
 
-G = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua"
+G = os.path.join(ADDONS, r"RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua")
 B = "|Tinterface/worldmap/chatbubble_64grey.blp:20|t"
 s = open(G, encoding="utf-8").read()
 if "99158" in s or "95212" in s:

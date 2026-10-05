@@ -12,9 +12,11 @@ Steps added (all #optional #sticky, so they stay on screen while you quest):
   3. cook Charred Wolf Meat to Cooking 50 - only while Cooking < 50
 Run once: python add_cooking_mining_undead.py
 """
+import os
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import sys
 
-G = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides\Guides\forever\Horde-01-14_Undead.lua"
+G = os.path.join(ADDONS, r"RXPGuides\Guides\forever\Horde-01-14_Undead.lua")
 MARK = "-- [RXPForever] raise Cooking/Mining"
 ANCHOR = "-- [RXPForever] Camping 101 Cooking hand-in = learning Cooking here"
 

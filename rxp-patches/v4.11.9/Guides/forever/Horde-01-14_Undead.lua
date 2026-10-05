@@ -637,6 +637,7 @@ step
 step
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Elreth|r << !Priest
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Elreth|r and |cRXP_FRIENDLY_Duesten|r << Priest
+    >>|cRXP_WARN_Pick your reward: |r|cRXP_LOOT_Mining for Dummies|r|cRXP_WARN_, |r|cRXP_LOOT_Pelt Collecting for Beginners|r|cRXP_WARN_ (Skinning) or |r|cRXP_LOOT_Wild Harvest|r|cRXP_WARN_ (Herbalism), then right-click it to learn the profession (+2 skill). If you already know a profession, pick that one|r
     .turnin 6395 >> Turn in Marla's Last Wish
     .target +Novice Elreth
     .goto 1420/0,1616.71,1842.92,10,0
@@ -655,6 +656,7 @@ step
 step
     .goto 1420/0,1568.35,1859.49
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Archibald|r
+    >>|cRXP_WARN_If you took Mining or Skinning, buy a|r |T134708:0|t[Mining Pick] |cRXP_WARN_or|r |T134366:0|t[Skinning Knife] |cRXP_WARN_from Archibald if he stocks it. Herbalism needs no tool|r
     .vendor >> Vendor Trash
     .target Archibald Kava
 step
@@ -2312,11 +2314,12 @@ step << Warlock
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Carendin|r in the Magic Quarter
     .turnin 1478 >> Turn in Halgar's Summons
     .accept 1473 >> Accept Creature of the Void
-step << Warlock
+step << Undead  -- [RXPForever] lich chain (was << Warlock: everyone hands in The Prodigal Lich here)
+    .isOnQuest 405
     .goto 1458/0,66.74,1766.31
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Bethor|r in the Magic Quarter
     .turnin 405 >>Turn in The Prodigal Lich
-    --.accept 357 >>Accept The Lich's Identity
+    .accept 357 >>Accept The Lich's Identity  -- [RXPForever] lich chain
     .target Bethor Iceshard
 step << Warlock
     .goto 1458/0,419.89,1627.54,50,0
@@ -2525,7 +2528,7 @@ step << Mage
     .goto 1458/0,66.74,1766.31
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Bethor|r in the Magic Quarter
     .turnin 405 >>Turn in The Prodigal Lich
-    --.accept 357 >>Accept The Lich's Identity
+    .accept 357 >>Accept The Lich's Identity  -- [RXPForever] lich chain
     .target Bethor Iceshard
 step << !Warlock
     #label UCHome
@@ -2719,10 +2722,11 @@ step
     >>Kill |cRXP_ENEMY_Vicious Night Web Spiders|r. Loot them for their |cRXP_LOOT_Venom|r
     .complete 369,1 --Vicious Night Web Spider Venom (4)
     .mob Vicious Night Web Spider
-step << skip
+step << Undead  -- [RXPForever] lich chain (was << skip)
     .goto 1420/0,-38.06,2569.54
     >>Loot |cRXP_PICK_Gunther's Books|r for |cRXP_LOOT_The Lich's Spellbook|r on the island in Brightwater Lake
     .complete 357,1 --The Lich's Spellbook (1)
+    .isOnQuest 357
 step
     #hardcore
     #completewith ANewPlagueFinal
@@ -3024,6 +3028,13 @@ step << Paladin --trade quarter
     .turnin 94434 >>Turn in A Lesson in Divinity
     .accept 94435 >>Accept A Lesson in Divinity
     .target Tanis Alderwood
+step << Undead
+    .goto 1458/0,66.74,1766.18
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Bethor|r in the Magic Quarter  -- [RXPForever] lich chain
+    .turnin 357 >>Turn in The Lich's Identity
+    .accept 366 >>Accept Return the Book << Paladin
+    .target Bethor Iceshard
+    .isQuestComplete 357
 step
     .goto 1458/0,201.400,1575.200
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Glix Xizzix|r
@@ -4301,6 +4312,209 @@ step << Undead
     .goto 1420/0,235.32,1883.89,50,0
     .zone Tirisfal Glades >> Exit Undercity
     .zoneskip Tirisfal Glades
+step << Paladin
+    #label DivinityKeep
+    .goto Tirisfal Glades,22.0,44.6
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Danitha Morr|r at Bandarion Keep (west Tirisfal)
+    >>|cRXP_WARN_Paladin class chain - it ends with|r |cRXP_WARN_[Redemption]|r
+    .turnin 94435 >>Turn in A Lesson in Divinity
+    .accept 94436 >>Accept A Lesson in Divinity
+    .target Danitha Morr
+    .isOnQuest 94435
+step << Paladin
+    .goto Tirisfal Glades,22.0,44.4
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Deathguard Billmuth|r (downstairs)
+    .turnin 94436 >>Turn in A Lesson in Divinity
+    .accept 94438 >>Accept A Lesson in Divinity
+    .target Deathguard Billmuth
+    .isOnQuest 94436
+step << Undead
+    #label DivinitySevren
+    .goto 1420/0,265.15,2305.94
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Magistrate Sevren|r in Brill (on your way east from the keep)
+    .turnin 440 >>Turn in The Engraved Ring
+    .accept 441 >>Accept Raleigh and the Undercity
+    .accept 408 >>Accept The Family Crypt << Paladin
+    .target Magistrate Sevren
+    .isOnQuest 440
+step << Undead
+    .goto 1420/0,74.00,2022.47
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Deathguard Linnea|r just south of Brill, on the road to the Undercity
+    .turnin 356 >>Turn in Rear Guard Patrol
+    .accept 99156 >>Accept Rear Guard Patrol << Paladin
+    .target Deathguard Linnea
+    .isQuestComplete 356
+step << Paladin
+    .goto Tirisfal Glades,76.8,54.2,15,0
+    .goto Tirisfal Glades,80.9,54.5,15,0
+    .goto Tirisfal Glades,86.7,47.8
+    >>Travel east to |cRXP_FRIENDLY_Venomweb Vale|r. |Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Deathguard Falgan|r - handing in raises him with the |cRXP_LOOT_Symbol of Life|r
+    >>|cRXP_WARN_Lost the Symbol? Danitha Morr gives you a new one|r
+    .turnin 94438 >>Resurrect Falgan
+    .accept 94440 >>Accept A Lesson in Divinity
+    .target Deathguard Falgan
+    .isOnQuest 94438
+step << Paladin
+    #loop
+    .goto Tirisfal Glades,86.9,44.5,0
+    .goto Tirisfal Glades,86.5,44.1,12,0
+    .goto Tirisfal Glades,87.3,44.1,12,0
+    .goto Tirisfal Glades,87.3,44.9,12,0
+    .goto Tirisfal Glades,86.5,44.9,12,0
+    >>Kill |cRXP_ENEMY_Scarlet Friars|r and |cRXP_ENEMY_Scarlet Zealots|r at the Scarlet camp just north of Falgan. Loot them for the |cRXP_LOOT_Scarlet Crusade Attack Plans|r
+    >>|cRXP_WARN_They are also at the Crusader Outpost south of the hill, on your way back west|r
+    .complete 94440,1
+    .mob Scarlet Friar
+    .mob Scarlet Zealot
+    .isOnQuest 94440
+step << Paladin
+    #loop
+    .goto Tirisfal Glades,80.5,44.5,0
+    .goto Tirisfal Glades,78.8,47.0,40,0
+    .goto Tirisfal Glades,81.2,42.8,40,0
+    .goto Tirisfal Glades,82.4,45.4,40,0
+    .goto Tirisfal Glades,80.6,55.2,40,0
+    >>Kill |cRXP_ENEMY_Riptear|r (level 13 elite, roams near Venomweb Vale). Loot him for |cRXP_LOOT_Riptear's Heart|r
+    >>|cRXP_WARN_Miners: plenty of copper veins around Venomweb Vale and Crusader Outpost - mine them while your hearthstone cools down (the Find Minerals icon on the minimap shows them)|r
+    .complete 99156,1
+    .unitscan Riptear
+    .isOnQuest 99156
+step << Paladin
+    .goto Tirisfal Glades,66.8,43.2
+    >>Swim out to |cRXP_FRIENDLY_Gunther's|r island in Brightwater Lake on your way west. |Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Gunther Arcanus|r
+    .turnin 366 >>Turn in Return the Book
+    .accept 409 >>Accept Proving Allegiance
+    .target Gunther Arcanus
+    .isOnQuest 366
+step << Paladin
+    .goto Tirisfal Glades,66.5,44.8
+    >>Take a |cRXP_LOOT_Candle of Beckoning|r from the crate on Gunther's island, then swim to the small island next to it
+    >>Kill the two guards, click the table and light the candle, then kill |cRXP_ENEMY_Lillith Nefara|r
+    >>|cRXP_WARN_She is level 12, arrives fast and hits hard - be at full health. Failed? Take another candle from the crate|r
+    .complete 409,1
+    .mob Lillith Nefara
+    .isOnQuest 409
+step << Paladin
+    .goto Tirisfal Glades,66.8,43.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Gunther Arcanus|r
+    .turnin 409 >>Turn in Proving Allegiance
+    .accept 411 >>Accept The Prodigal Lich Returns
+    .target Gunther Arcanus
+    .isQuestComplete 409
+step << Paladin
+    #completewith DivinityCrypt
+    .goto Tirisfal Glades,51.0,27.5,20 >>Head north-west to the |cRXP_FRIENDLY_Agamand Family Crypt|r (north of Agamand Mills) and go in
+    .isOnQuest 408
+step << Paladin
+    #label DivinityCrypt
+    #loop
+    .goto Tirisfal Glades,51.2,29.6,0
+    .goto Tirisfal Glades,50.6,29.4,15,0
+    .goto Tirisfal Glades,51.2,28.0,15,0
+    .goto Tirisfal Glades,52.0,28.6,15,0
+    .goto Tirisfal Glades,51.8,30.5,15,0
+    .goto Tirisfal Glades,51.3,31.5,15,0
+    >>Kill |cRXP_ENEMY_Wailing Ancestors|r and |cRXP_ENEMY_Rotting Ancestors|r in the crypt
+    .complete 408,1
+    .complete 408,2
+    .mob Wailing Ancestor
+    .mob Rotting Ancestor
+    .isOnQuest 408
+step << Paladin
+    .goto Tirisfal Glades,52.4,26.5
+    >>Go down to the |cRXP_WARN_bottom floor|r of the crypt. Kill |cRXP_ENEMY_Captain Dargol|r and loot his |cRXP_LOOT_Skull|r
+    .complete 408,3
+    .mob Captain Dargol
+    .isOnQuest 408
+step << Paladin
+    .goto Tirisfal Glades,22.0,44.4
+    >>Travel back west to Bandarion Keep. |Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Deathguard Billmuth|r (downstairs)
+    .turnin 94440 >>Turn in A Lesson in Divinity
+    .accept 94441 >>Accept A Lesson in Divinity
+    .target Deathguard Billmuth
+    .isQuestComplete 94440
+step << Paladin
+    .goto Tirisfal Glades,22.0,44.6
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Danitha Morr|r in the keep
+    .turnin 94441 >>Turn in A Lesson in Divinity
+    .target Danitha Morr
+    .isOnQuest 94441
+step << Paladin
+    .hs >> Hearth to the Undercity - RFC prequests (Varimathras) and the zeppelin start there
+    .use 6948
+    .bindlocation 1497,1
+    .cooldown item,6948,>0
+    .isQuestTurnedIn 94441
+step << Undead
+    .goto Undercity,62.4,43.5
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Raleigh Andrean|r in the Undercity
+    .turnin 441 >>Turn in Raleigh and the Undercity
+    .target Raleigh Andrean
+    .isOnQuest 441
+step << Undead
+    .goto 1458/0,66.74,1766.18
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Bethor|r in the Magic Quarter
+    .turnin 411 >>Turn in The Prodigal Lich Returns
+    .target Bethor Iceshard
+    .isQuestComplete 411
+step << Undead
+    #completewith next
+    .goto 1458,64.42,64.62,20,0
+    .goto 1458,51.88,64.84,20,0
+    .goto 1458,46.28,73.10,15,0
+    .goto 1458,45.31,78.24,15,0
+    .goto 1458,46.18,83.63,15,0
+    .goto 1458,48.80,87.63,15,0
+    .goto 1458,52.45,89.49,15,0
+    .goto 1458,56.4,92.4,12 >>Travel to the Royal Quarter
+    .zoneskip Undercity,1
+    .isQuestAvailable 5725
+    .isNotOnQuest 5725
+step << Undead
+    .goto 1458,56.4,92.4
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Varimathras|r beside Sylvanas
+    >>|cRXP_WARN_Ragefire Chasm prequest - done later with our RFC guide|r
+    .accept 5725 >>Accept The Power to Destroy...
+    .target Varimathras
+    .zoneskip Undercity,1
+    .isQuestAvailable 5725
+    .isNotOnQuest 5725
+step << Undead
+    #completewith DivinityLinnea2
+    .goto 1458,52.45,89.49,15,0
+    .goto 1458,48.80,87.63,15,0
+    .goto 1458,46.18,83.63,15,0
+    .goto 1458,45.31,78.24,15,0
+    .goto 1458,46.28,73.10,15,0
+    .goto 1458,51.88,64.84,20,0
+    .goto 1458,64.42,64.62,20,0
+    .goto 1458,65.50,56.75,20,0
+    .goto 1420/0,235.32,1883.89
+    .zone Tirisfal Glades >> Exit Undercity by the elevators
+    .zoneskip Undercity,1
+step << Undead
+    #label DivinityLinnea2
+    .goto 1420/0,74.00,2022.47
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Deathguard Linnea|r just outside the Undercity
+    .turnin 99156 >>Turn in Rear Guard Patrol
+    .target Deathguard Linnea
+    .isQuestComplete 99156
+step << Undead
+    .goto 1420,65.2,60.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Deathguard Kristof|r beside Linnea
+    >>|cRXP_WARN_Ruins of Lordaeron starter - done later with our RoL guide|r
+    .accept 92422 >>Accept The Wrath of Rath'mael
+    .target Deathguard Kristof
+    .xp <15,1
+    .isQuestAvailable 92422
+    .isNotOnQuest 92422
+step << Undead
+    .goto 1420/0,265.15,2305.94
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Magistrate Sevren|r in Brill, just north of the zeppelin tower
+    >>|cRXP_WARN_Reward: take Bonecracker (2H mace) - sell it if your weapon is better|r
+    .turnin 408 >>Turn in The Family Crypt
+    .target Magistrate Sevren
+    .isQuestComplete 408
 step << Undead
     #label ZeptoDurotar
     .goto 1420/0,278.70,2071.27,12,0

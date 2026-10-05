@@ -98,8 +98,10 @@ if ($rxpVersion -ne $manifest.rxpVersion) {
         $target = Join-Path $rxp ($m.path -replace '/', '\')
         $hash = (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
         if ($hash -eq $m.patched) { Say "  already fixed: $($m.path)"; continue }
-        if ($hash -ne $m.original) { Say "  skipped (file isn't the original v4.11.9 one): $($m.path)" 'Yellow'; continue }
-        Copy-Item -LiteralPath $target -Destination "$target.orig" -Force
+        # an earlier version of this pack's own fix is replaced (manifest "previous"); anything else is left alone
+        $older = $m.previous -and ($m.previous -contains $hash)
+        if ($hash -ne $m.original -and -not $older) { Say "  skipped (file isn't the original v4.11.9 one): $($m.path)" 'Yellow'; continue }
+        if (-not $older) { Copy-Item -LiteralPath $target -Destination "$target.orig" -Force }   # keep RestedXP's original once
         Copy-Item -LiteralPath (Join-Path $patchDir ($m.path -replace '/', '\')) -Destination $target -Force
         Say "  fixed: $($m.path)" 'Green'
     }

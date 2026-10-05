@@ -8,13 +8,16 @@ final hand-ins. Accepts that depend on an earlier hand-in carry a "click to skip
 the exact unlock order for 99160/99162 isn't published.
 Applied to both copies in Alliance-1-14_DwarfGnome.lua, its PATCHED mirror, and the standalone guide in
 RXPForever.lua (source + installed). Idempotent."""
+import os
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
+REPO = r"."   # run from the pack folder
 import sys
 
 B = "|Tinterface/worldmap/chatbubble_64grey.blp:20|t"
-FILES = [r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua",
-         r"D:\wow-forever-addons\rxp-forever\patches\Alliance-1-14_DwarfGnome.PATCHED.lua",
-         r"D:\wow-forever-addons\rxp-forever\RXPForever\RXPForever.lua",
-         r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPForever\RXPForever.lua"]
+FILES = [os.path.join(ADDONS, r"RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua"),
+         os.path.join(REPO, r"rxp-forever\patches\Alliance-1-14_DwarfGnome.PATCHED.lua"),
+         os.path.join(REPO, r"rxp-forever\RXPForever\RXPForever.lua"),
+         os.path.join(ADDONS, r"RXPForever\RXPForever.lua")]
 
 START = f"""step
     .goto Dun Morogh,57.4,44.8

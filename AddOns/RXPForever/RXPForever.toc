@@ -9,4 +9,5 @@
 ## SavedVariablesPerCharacter: RXPForeverDB
 
 State.lua
+GazVersion.lua
 RXPForever.lua

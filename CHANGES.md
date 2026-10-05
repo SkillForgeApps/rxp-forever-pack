@@ -25,6 +25,20 @@ RXP's junk-coin marker refreshed every bag window from addon code shortly after 
 on, that blocked the controller (`SetOverrideBindingClick`, blamed on RXPGuides) until a reload. The coins are now drawn
 straight onto the bag slots instead.
 
+## `libs/HereBeDragons/HereBeDragons-Pins-2.0.lua` - world-map icons (`patch_hbd_worldmap_overlay.py`)
+RestedXP's world-map icons were Blizzard map pins created from addon code; every map open then ran addon code inside
+Blizzard's map and tainted the gamepad UI. The icons are now drawn on RestedXP's own overlay above the map and look the same.
+
+## `Guides/forever/Horde-01-12_Durotar.lua` - Durotar
+- **Valley hand-ins** (`add_durotar_valley_handins.py`): if the Skull Rock death-skip respawns you in the Valley of Trials,
+  hand in *Thazz'ril's Pick* and the *Burning Blade Medallion* there, then hearth back; the step text explains both respawns.
+- **Profession manual** (`add_profession_reminders_dur_undead.py`): pick the profession-manual reward from Galgar's quest, and
+  buy a pick or knife at the next vendor.
+
+## `Guides/forever/Horde-12-22_Barrens.lua` - The Barrens (`fix_barrens_mudsnapper.py`)
+Innkeeper Wiley's step in Ratchet no longer needs 20 Longjaw Mud Snappers (he doesn't stock them on Forever) - it completes
+when you visit him.
+
 ## `Guides/forever/Alliance-1-14_DwarfGnome.lua` - Dun Morogh (both the normal and the Hunter guide)
 - **Camping 101** (`add_camping101.py`): the Cooking quest from Eric Brighthammer and the profession quests at the
   campfire, each only if you have that profession, with their hand-ins in Kharanos/Iceflow and Ironforge.
@@ -43,6 +57,10 @@ used to disappear once *Rites of the Earthmother* was accepted, even with quests
 
 - **Camp Taurajo** (`fix_mulgore_barrens_text.py`): the "travel to The Barrens" step now says Camp Taurajo is just over
   the border east of Mulgore.
+- **Kaga Wildhoof** (`add_mulgore_adventurer.py`, `add_mulgore_camping101.py`): *The Adventurer* and *The Great Outdoors*,
+  then the Camping 101 profession quests, with their hand-ins at the Bloodhoof and Thunder Bluff trainers.
+- **Profession manual and Seer Graytongue:** pick the profession-manual reward at Greatmother Hawkwind; shamans are told
+  which of Seer Graytongue's quests to skip.
 - **Thunder Bluff visit** (`add_tb_fp_mulgore.py`): Tauren don't start with the Thunder Bluff flight path on Forever, so
   after *A Sacred Burial* the guide takes you up into Thunder Bluff: flight path from Tal, *Journey into Thunder Bluff*
   to Cairne, then back down. The later "fly to Thunder Bluff" step works after that.
@@ -72,3 +90,7 @@ pointed the arrow at the first one.
 - **Skull Rock** (`fix_skull_rock_waypoint.py`): the *Hidden Enemies* step (Lieutenant's Insignia) had one waypoint
   written so that RXP never shows an arrow for it. It now uses RXP's own nine-point route through Skull Rock from the
   Barrens guide.
+- **A Lesson in Divinity** (`add_lesson_in_divinity.py`): the Undead Paladin chain is finished - Danitha Morr at Bandarion
+  Keep, Venomweb Vale and back, ending with Redemption (RestedXP accepted part 5 and never came back).
+- **Lich chain** (`add_lich_chain.py`): *The Prodigal Lich* and *The Lich's Identity* for every Undead while they still give XP.
+- **Profession manual** (`add_profession_reminders_dur_undead.py`): the profession-manual reward from Marla's Last Wish.

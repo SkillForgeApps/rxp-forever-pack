@@ -5,8 +5,8 @@ and a step with several plain `.goto`s only ever points at the first one - eithe
 the item. The fix is one step per item: one `.goto x,y` (no radius) + that item's `.complete id,N`.
 Kill-and-loot steps are excluded (their waypoints are a patrol route, moving on is right) and #loop steps too.
 Run after every RXP update and after adding guide content:  python scan_fixed_pickups.py"""
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import re, glob
-ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"
 files = glob.glob(ADDONS + r"\RXPGuides\Guides\forever\*.lua") + [ADDONS + r"\RXPForever\RXPForever.lua"]
 n = 0
 for f in files:

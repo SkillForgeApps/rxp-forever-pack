@@ -14,11 +14,12 @@ Patch: the overlay is parented to UIParent and anchored over the reward button (
 hides itself when the button is no longer visible. The icon looks and behaves the same. Idempotent; backs up the
 original next to this script. Re-run after every RXP update. Revert: copy the backup over RXPGuides.lua.
 """
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import os
 import shutil
 import sys
 
-RXP = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides"
+RXP = os.path.join(ADDONS, r"RXPGuides")
 HERE = os.path.dirname(os.path.abspath(__file__))
 MARK = "-- RXPForever: overlay parented to UIParent"
 

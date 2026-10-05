@@ -37,15 +37,16 @@ do
 	end)
 end
 
--- ===== Gamepad UI on/off icon (25 Sep, Gaz: "add the icon back, I understand it will reload the ui but its still
--- quicker than opening options unticking etc when im in a dungeon or stress situation") =====
--- Does exactly what Blizzard's Settings > Gameplay > Gamepad > "Enable Gamepad UI (Alpha)" tickbox does
--- (Blizzard_SettingsDefinitions_Shared/Gamepad.lua: GAMEPAD_INTERFACE_TOGGLE sets the CVar InputDeviceInterfaceStyle
--- to Enum.InputDeviceInterfaceType.Gamepad or .Mkb), then reloads the UI straight away, because the gamepad UI is
--- built at UI load. One click, or Ctrl+Shift+G (only bound if that key is free). Controller INPUT (GamePadEnable) is
--- never touched here - the first version flipped that and left the controller dead. Shift-drag to move.
+-- ===== Auctionator on/off icon (28 Sep, Gaz: "the errors with auctionator are endless ... if you cant fix it we will
+-- keep auctionator off ... change the gamepad ui button on the mini map to swap to an auctionator on off button") =====
+-- Replaces the Gamepad UI icon (25 Sep). Auctionator taints the gamepad UI (Settings window, AH tabs, buff timers - see
+-- CLAUDE.md 27-28 Sep) and no fix held, so it stays off and is switched on only for an AH session. Click = enable or
+-- disable Auctionator for all characters (C_AddOns, as !BugGrabber does) and reload, because addons only load or
+-- unload at a reload. Coloured = on, grey = off. Shift-drag slides it round the minimap ring. The Gamepad UI switch is
+-- still Blizzard's own tickbox: Settings > Gameplay > Gamepad.
 do
-	local b = CreateFrame("Button", "ForeverGamepadButton", UIParent)
+	local ADDON = "Auctionator"
+	local b = CreateFrame("Button", "ForeverAuctionatorButton", UIParent)
 	b:SetSize(24, 24)
 	b:SetFrameStrata("HIGH")
 	b:SetClampedToScreen(true)
@@ -54,48 +55,46 @@ do
 	b:SetPoint("TOP", ForeverReloadButton, "BOTTOM", 0, -4)
 	local icon = b:CreateTexture(nil, "ARTWORK")
 	icon:SetAllPoints()
-	icon:SetTexture("Interface\\Icons\\INV_Gizmo_01")
+	icon:SetTexture("Interface\\Icons\\INV_Misc_Coin_02")
 	icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 	b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
-	local function uiOn() return InputUtil and InputUtil.IsGamepadUIEnabled and InputUtil.IsGamepadUIEnabled() end
+	local function exists() return C_AddOns and C_AddOns.GetAddOnInfo and C_AddOns.GetAddOnInfo(ADDON) ~= nil end
+	local function isOn()
+		-- no character argument = all characters, the same scope Enable/DisableAddOn below act on (30 Sep: asking with
+		-- UnitName("player") could read 0 while it was on, so a click always "enabled" and it never switched off)
+		return C_AddOns and C_AddOns.GetAddOnEnableState and (C_AddOns.GetAddOnEnableState(ADDON) or 0) > 0
+	end
 	local function refresh()
-		local on = uiOn()
+		local on = isOn()
 		icon:SetDesaturated(not on)
 		icon:SetAlpha(on and 1 or 0.6)
 	end
 	b:SetScript("OnClick", function()
-		local T = Enum and Enum.InputDeviceInterfaceType
-		if not (T and T.Gamepad and T.Mkb) then
-			print("|cff33ff99Gamepad UI:|r this client has no interface-style setting - use Settings > Gameplay > Gamepad.")
+		if not exists() then
+			print("|cff33ff99Auctionator:|r not installed.")
 			return
 		end
-		local ok, err = pcall(C_CVar.SetCVar, "InputDeviceInterfaceStyle", uiOn() and T.Mkb or T.Gamepad)
-		if not ok then
-			print("|cff33ff99Gamepad UI:|r the game refused the switch (" .. tostring(err) .. ").")
-			return
-		end
+		local wasOn = isOn()
+		if wasOn then C_AddOns.DisableAddOn(ADDON) else C_AddOns.EnableAddOn(ADDON) end
+		if C_AddOns.SaveAddOns then C_AddOns.SaveAddOns() end
+		print("|cff33ff99Auctionator:|r switching " .. (wasOn and "OFF" or "ON") .. " (now reads " ..
+			tostring(C_AddOns.GetAddOnEnableState(ADDON)) .. ") - reloading the UI")
 		ReloadUI()
 	end)
 	b:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then self:StartMoving() end end)
 	b:SetScript("OnDragStop", b.StopMovingOrSizing)
 	b:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:AddLine("Gamepad UI: " .. (uiOn() and "|cff40ff40on|r" or "|cffff5555off|r"))
-		GameTooltip:AddLine("Click (or Ctrl+Shift+G) to switch it " .. (uiOn() and "off" or "on") ..
-			" and reload the UI straight away.", 1, 1, 1, true)
+		GameTooltip:AddLine("Auctionator: " .. (isOn() and "|cff40ff40on|r" or "|cffff5555off|r"))
+		GameTooltip:AddLine("Click to switch it " .. (isOn() and "off" or "on") .. " and reload the UI.", 1, 1, 1, true)
+		GameTooltip:AddLine("Keep it off when you're not at the auction house - it breaks the controller UI.", 1, 0.82, 0, true)
 		GameTooltip:AddLine("Shift-drag to move.", 0.7, 0.7, 0.7)
 		GameTooltip:Show()
 	end)
 	b:SetScript("OnLeave", function() GameTooltip:Hide() end)
 	local ev = CreateFrame("Frame")
 	ev:RegisterEvent("PLAYER_LOGIN")
-	ev:SetScript("OnEvent", function()
-		refresh()
-		local action = GetBindingAction and GetBindingAction("CTRL-SHIFT-G")
-		if (action == nil or action == "") and not InCombatLockdown() then
-			SetOverrideBindingClick(b, true, "CTRL-SHIFT-G", "ForeverGamepadButton")
-		end
-	end)
+	ev:SetScript("OnEvent", refresh)
 end
 
 -- ===== Mouse buttons back with the Gamepad UI on (25 Sep, Gaz: "keep it as is but add a train/interact ui button for
@@ -187,6 +186,265 @@ do
 	end)
 end
 
+-- ===== Find Minerals / Find Herbs icon (29 Sep, Gaz: "is there some way to add find minerals to the minimap as an icon,
+-- I keep forgetting to turn it on") =====
+-- Click = switch the character's gathering tracking on or off (Find Minerals, else Find Herbs) with C_Minimap.SetTracking -
+-- the call Blizzard's own tracking menu makes (Blizzard_Minimap/Mainline/Minimap.lua), not a protected cast. It is also
+-- switched on by itself at login and after a resurrection, but only when nothing else is being tracked (a hunter's beast
+-- tracking is never overridden). Coloured = on, grey = off; hidden on characters that know neither. Ring slot: 206 deg.
+do
+	local SPELLS = { 2580, 2383 }   -- Find Minerals, Find Herbs
+	local b = CreateFrame("Button", "ForeverTrackingButton", UIParent)
+	b:SetSize(24, 24)
+	b:SetFrameStrata("HIGH")
+	b:SetClampedToScreen(true)
+	b:SetMovable(true)
+	b:RegisterForDrag("LeftButton")
+	b:SetPoint("TOP", ForeverReloadButton, "BOTTOM", 0, -32)
+	local icon = b:CreateTexture(nil, "ARTWORK")
+	icon:SetAllPoints()
+	icon:SetTexture("Interface\\Icons\\Spell_Nature_Earthquake")
+	icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+	b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+	local function find()
+		if not (C_Minimap and C_Minimap.GetNumTrackingTypes and C_Minimap.GetTrackingInfo) then return end
+		local byId = {}
+		local otherActive = false
+		for i = 1, C_Minimap.GetNumTrackingTypes() do
+			local info = C_Minimap.GetTrackingInfo(i)
+			if info then
+				if info.spellID and (info.spellID == SPELLS[1] or info.spellID == SPELLS[2]) then
+					byId[info.spellID] = { index = i, info = info }
+				elseif info.active and info.type == "spell" then
+					otherActive = true
+				end
+			end
+		end
+		return byId[SPELLS[1]] or byId[SPELLS[2]], otherActive
+	end
+	local function refresh()
+		local t = find()
+		b:SetShown(t ~= nil)
+		if not t then return end
+		if t.info.texture then icon:SetTexture(t.info.texture) end
+		icon:SetDesaturated(not t.info.active)
+		icon:SetAlpha(t.info.active and 1 or 0.6)
+	end
+	local function set(on)
+		local t = find()
+		if not t then return end
+		pcall(C_Minimap.SetTracking, t.index, on)
+		if C_Timer then C_Timer.After(0.5, refresh) end
+	end
+	local function autoOn()
+		local t, otherActive = find()
+		if t and not t.info.active and not otherActive and not UnitIsDeadOrGhost("player") then set(true) end
+		refresh()
+	end
+	b:SetScript("OnClick", function()
+		local t = find()
+		if t then set(not t.info.active) end
+	end)
+	b:SetScript("OnEnter", function(self)
+		local t = find()
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:AddLine((t and t.info.name or "Gathering tracking") .. ": " .. ((t and t.info.active) and "|cff40ff40on|r" or "|cffff5555off|r"))
+		GameTooltip:AddLine("Click to switch it. It comes back on by itself at login and after you resurrect.", 1, 1, 1, true)
+		GameTooltip:AddLine("Shift-drag to slide it round the minimap.", 0.7, 0.7, 0.7)
+		GameTooltip:Show()
+	end)
+	b:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	local ev = CreateFrame("Frame")
+	ev:RegisterEvent("PLAYER_ENTERING_WORLD")
+	ev:RegisterEvent("PLAYER_UNGHOST")
+	ev:RegisterEvent("PLAYER_ALIVE")
+	ev:RegisterEvent("MINIMAP_UPDATE_TRACKING")
+	ev:SetScript("OnEvent", function(_, event)
+		if event == "MINIMAP_UPDATE_TRACKING" then refresh()
+		elseif C_Timer then C_Timer.After(2, autoOn) else autoOn() end
+	end)
+end
+
+-- ===== Taint log on/off icon (30 Sep, Gaz: "you need to build an icon that turns it on and off - it takes too long to
+-- type it after an error each time whilst trying to regain control of the interface") =====
+-- One click = taintLog 11 (the level that names the addon line that taints; writes GBs while a window is open), the next
+-- click = taintLog 0. It switches itself off after 45 seconds so it can't run away (a forgotten level 11 froze the game
+-- on 30 Sep). Use it BEFORE the action that fails: click, do the thing (open the map, close it with B, accept a quest),
+-- click again. Red = logging. Logs	aint.log is read by Claude afterwards. Ring slot 228 deg.
+do
+	local LEVEL, AUTO_OFF = "11", 45
+	local b = CreateFrame("Button", "ForeverTaintLogButton", UIParent)
+	b:SetSize(24, 24)
+	b:SetFrameStrata("HIGH")
+	b:SetClampedToScreen(true)
+	b:SetMovable(true)
+	b:RegisterForDrag("LeftButton")
+	b:SetPoint("TOP", ForeverTrackingButton or ForeverReloadButton, "BOTTOM", 0, -4)
+	local icon = b:CreateTexture(nil, "ARTWORK")
+	icon:SetAllPoints()
+	icon:SetTexture("Interface\\Icons\\INV_Misc_Note_06")
+	icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+	local ring = b:CreateTexture(nil, "OVERLAY")
+	ring:SetTexture("Interface\\Buttons\\CheckButtonHilight")
+	ring:SetBlendMode("ADD")
+	ring:SetAllPoints()
+	ring:SetVertexColor(1, 0.1, 0.1)
+	b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+	local token = 0
+	local function get() return (C_CVar and C_CVar.GetCVar and C_CVar.GetCVar("taintLog")) or GetCVar("taintLog") end
+	local function set(v)
+		if not (pcall(C_CVar.SetCVar, "taintLog", v)) then pcall(ConsoleExec, "taintLog " .. v) end
+	end
+	local function isOn() local v = get() return v ~= nil and v ~= "0" end
+	local function refresh()
+		local on = isOn()
+		ring:SetShown(on)
+		icon:SetDesaturated(not on)
+		icon:SetAlpha(on and 1 or 0.7)
+	end
+	local function say(msg) print("|cffff5555Taint log:|r " .. msg) end
+	local function turn(on)
+		token = token + 1
+		set(on and LEVEL or "0")
+		refresh()
+		if isOn() ~= on then say("the game refused the change - type /console taintLog " .. (on and LEVEL or "0") .. " instead.") return end
+		if on then
+			say("ON (level " .. LEVEL .. "). Do the failing thing now, then click again. Switches itself off in " .. AUTO_OFF .. "s.")
+			local mine = token
+			if C_Timer then C_Timer.After(AUTO_OFF, function() if mine == token and isOn() then turn(false) say("auto-off after " .. AUTO_OFF .. "s.") end end) end
+		else
+			say("OFF. Tell Claude what you did.")
+		end
+	end
+	b:SetScript("OnClick", function() turn(not isOn()) end)
+	b:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then self:StartMoving() end end)
+	b:SetScript("OnDragStop", b.StopMovingOrSizing)
+	b:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:AddLine("Taint log: " .. (isOn() and "|cffff5555ON|r" or "off"))
+		GameTooltip:AddLine("Click BEFORE the thing that breaks the controller UI, do it, click again. Auto-off after " .. AUTO_OFF .. "s.", 1, 1, 1, true)
+		GameTooltip:AddLine("Shift-drag to move.", 0.7, 0.7, 0.7)
+		GameTooltip:Show()
+	end)
+	b:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	SLASH_FOREVERTAINT1 = "/taint"
+	SlashCmdList.FOREVERTAINT = function() turn(not isOn()) end
+	local ev = CreateFrame("Frame")
+	ev:RegisterEvent("PLAYER_LOGIN")
+	ev:SetScript("OnEvent", function()
+		-- never start a session with the log left on (level 11 floods once a window is open)
+		if isOn() then set("0") end
+		refresh()
+	end)
+end
+
+-- ===== Chat dump (1 Oct, Gaz: "add something that dumps the chat box or I have to keep screenshotting it") =====
+-- /chatdump (or the ring icon) copies the last 300 lines of the main chat window - addon prints included - into the saved
+-- variable ForeverSVRing.chatDump and reloads the UI, which is what makes the game write the file to disk
+-- (WTF\\Account\\...\\SavedVariables\\!ForeverSV.lua). Claude reads it from there. Colour codes and links are stripped.
+-- /chatdump 100 = last 100 lines only. The buffer is also saved automatically on every /reload and logout.
+do
+	local LIMIT = 300
+	local b = CreateFrame("Button", "ForeverChatDumpButton", UIParent)
+	b:SetSize(24, 24)
+	b:SetFrameStrata("HIGH")
+	b:SetClampedToScreen(true)
+	b:SetMovable(true)
+	b:RegisterForDrag("LeftButton")
+	b:SetPoint("TOP", ForeverTaintLogButton or ForeverTrackingButton or ForeverReloadButton, "BOTTOM", 0, -4)
+	local icon = b:CreateTexture(nil, "ARTWORK")
+	icon:SetAllPoints()
+	icon:SetTexture("Interface\\Icons\\INV_Misc_Note_01")
+	icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+	b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+	local function clean(t)
+		if type(t) ~= "string" then return nil end
+		if issecretvalue and issecretvalue(t) then return "<secret>" end
+		t = t:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|H[^|]*|h(.-)|h", "%1"):gsub("|T.-|t", ""):gsub("|A.-|a", "")
+		return t
+	end
+	local function capture(n)
+		local out = {}
+		local cf = DEFAULT_CHAT_FRAME or ChatFrame1
+		if not (cf and cf.GetNumMessages and cf.GetMessageInfo) then return out end
+		local total = cf:GetNumMessages()
+		for i = math.max(1, total - (n or LIMIT) + 1), total do
+			local ok, text = pcall(cf.GetMessageInfo, cf, i)
+			local line = ok and clean(text)
+			if line and line ~= "" then out[#out + 1] = line end
+		end
+		return out
+	end
+	local function save(n)
+		ForeverSVRing = type(ForeverSVRing) == "table" and ForeverSVRing or {}   -- already a saved variable: no restart needed
+		ForeverSVRing.chatDump = { time = date("%Y-%m-%d %H:%M:%S"), lines = capture(n) }
+		return #ForeverSVRing.chatDump.lines
+	end
+	local function dump(n)
+		local count = save(n)
+		print("|cff66ccffchat dump:|r " .. count .. " lines saved - reloading so the file is written")
+		ReloadUI()   -- directly: from a C_Timer callback it is blocked (ADDON_ACTION_BLOCKED Reload), only a click/slash may call it
+	end
+	b:SetScript("OnClick", function() dump() end)
+	b:SetScript("OnDragStart", function(self) if IsShiftKeyDown() then self:StartMoving() end end)
+	b:SetScript("OnDragStop", b.StopMovingOrSizing)
+	b:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:AddLine("Dump chat for Claude")
+		GameTooltip:AddLine("Saves the last " .. LIMIT .. " chat lines and reloads the UI so the file is written. Claude reads it - no screenshot needed.", 1, 1, 1, true)
+		GameTooltip:AddLine("Shift-drag to move.", 0.7, 0.7, 0.7)
+		GameTooltip:Show()
+	end)
+	b:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	SLASH_FOREVERCHATDUMP1 = "/chatdump"
+	SlashCmdList.FOREVERCHATDUMP = function(msg) dump(tonumber((msg or ""):match("%d+"))) end
+	local ev = CreateFrame("Frame")
+	ev:RegisterEvent("PLAYER_LOGOUT")
+	ev:SetScript("OnEvent", function() pcall(save) end)   -- every reload / logout keeps the latest chat on disk too
+end
+
+-- ===== Real quest XP, straight from the game (1 Oct, Gaz: "dungeon quest XP is heavily increased in Forever") =====
+-- Wowhead's Forever pages show raw 'xp' fields (Classic values) next to a calculated figure (about 2.9x for dungeon quests), so
+-- neither is trusted. Whenever a quest window opens - accept (QUEST_DETAIL), progress, hand-in (QUEST_COMPLETE) - the game's own
+-- GetRewardXP() is stored in ForeverSVRing.questXP[questID] = { xp, title, level (player), when } and written to disk on the
+-- next reload / /chatdump. /questxp prints it for every quest in the log (C_QuestLog.GetQuestLogRewardXP).
+do
+	local function store(questID, xp, title)
+		if not questID or questID == 0 or type(xp) ~= "number" then return end
+		if issecretvalue and (issecretvalue(xp) or issecretvalue(questID)) then return end
+		ForeverSVRing = type(ForeverSVRing) == "table" and ForeverSVRing or {}
+		ForeverSVRing.questXP = type(ForeverSVRing.questXP) == "table" and ForeverSVRing.questXP or {}
+		ForeverSVRing.questXP[questID] = { xp = xp, title = title, level = UnitLevel("player"), when = date("%Y-%m-%d %H:%M") }
+	end
+	local ev = CreateFrame("Frame")
+	for _, e in ipairs({ "QUEST_DETAIL", "QUEST_PROGRESS", "QUEST_COMPLETE" }) do ev:RegisterEvent(e) end
+	ev:SetScript("OnEvent", function()
+		pcall(function()
+			local id = GetQuestID and GetQuestID()
+			local xp = GetRewardXP and GetRewardXP()
+			local title = GetTitleText and GetTitleText()
+			if id and id ~= 0 then store(id, xp, title) end
+		end)
+	end)
+	SLASH_FOREVERQUESTXP1 = "/questxp"
+	SlashCmdList.FOREVERQUESTXP = function()
+		local n = C_QuestLog and C_QuestLog.GetNumQuestLogEntries and C_QuestLog.GetNumQuestLogEntries() or 0
+		local lines = 0
+		for i = 1, n do
+			local info = C_QuestLog.GetInfo and C_QuestLog.GetInfo(i)
+			if info and not info.isHeader and info.questID then
+				local ok, xp = pcall(C_QuestLog.GetQuestLogRewardXP, info.questID)
+				if ok and type(xp) == "number" then
+					store(info.questID, xp, info.title)
+					print(string.format("|cff66ccffquestxp:|r %d  %s  = %d XP", info.questID, tostring(info.title), xp))
+					lines = lines + 1
+				end
+			end
+		end
+		print("|cff66ccffquestxp:|r " .. lines .. " quests in your log. Click the chat dump icon and I can read them.")
+	end
+end
+
 -- ===== Our icons on the minimap ring (26 Sep, Gaz: "getting quite the collection of mini icons, can you move them to
 -- the outer ring of the minimap") =====
 -- The guide book (RXPForever), reload, gamepad UI, to-do list and gear snapshot icons (ForeverGear) sit on the ring,
@@ -196,8 +454,12 @@ end
 -- installed is skipped.
 do
 	local ICONS = {   -- name, default angle in degrees (0 = right, 90 = top, counter-clockwise)
-		{ "RXPForeverToggleButton", 250 }, { "ForeverReloadButton", 272 }, { "ForeverGamepadButton", 294 },
+		{ "RXPForeverToggleButton", 250 }, { "ForeverReloadButton", 272 }, { "ForeverAuctionatorButton", 294 },
 		{ "ForeverGearTodoButton", 316 }, { "ForeverGearSnapshotButton", 338 },
+		{ "RXPForeverStepBackButton", 0 }, { "RXPForeverStepNextButton", 22 },   -- guide step back / forward (29 Sep)
+		{ "ForeverTrackingButton", 206 },                                        -- Find Minerals / Herbs (29 Sep)
+		{ "ForeverTaintLogButton", 228 },                                        -- taint log on/off (30 Sep)
+		{ "ForeverChatDumpButton", 184 },                                        -- chat dump for Claude (1 Oct)
 	}
 	local function saved() ForeverSVRing = type(ForeverSVRing) == "table" and ForeverSVRing or {} return ForeverSVRing end
 	local function put(b, deg)

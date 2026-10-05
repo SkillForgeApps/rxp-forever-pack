@@ -13,9 +13,11 @@ Tirisfal 57.2,55.4; each quest's End npc + g_mapperData). Same pattern as add_ca
       Undercity trainers -> after the "Take the lift down to the Undercity" step
 Run once: python add_camping101_undead.py   (edits the installed guide; refuses to run twice)
 """
+import os
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import sys
 
-G = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides\Guides\forever\Horde-01-14_Undead.lua"
+G = os.path.join(ADDONS, r"RXPGuides\Guides\forever\Horde-01-14_Undead.lua")
 BUBBLE = "|Tinterface/worldmap/chatbubble_64grey.blp:20|t"
 MARK = "-- [RXPForever] Camping 101"
 

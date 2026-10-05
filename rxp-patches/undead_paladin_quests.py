@@ -1,7 +1,7 @@
 """Undead Paladin class quests in RXP's forever/Horde-01-14_Undead.lua - builds the whole fix from RXP's ORIGINAL file.
 
 SUPERSEDES skip_coming_to_terms.py and add_rediscovering_the_light.py (25 Sep 2026, same day):
-  - a level-4 Undead Paladin was never offered Coming to Terms (91208) -> first skipped it.
+  - Gaz's level-4 Undead Paladin (an Undead Paladin) was never offered Coming to Terms (91208) -> first skipped it.
   - He then asked for Rediscovering the Light (90902, which RXP had commented out as "only 85xp, not worth doing").
   - After handing 90902 in, Coming to Terms appeared at Aramis: "rediscovering the light is the prequest to coming to
     terms". Wowhead Forever lists no prerequisite for 91208 - this link is from Gaz's own play.
@@ -24,12 +24,13 @@ Usage: python undead_paladin_quests.py            -> original = Horde-01-14_Unde
                                                       result written to the installed guide
        python undead_paladin_quests.py IN OUT     -> test run
 """
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ORIGINAL = os.path.join(HERE, "Horde-01-14_Undead.BEFORE-comingtoterms.lua")   # RXP v4.11.9, untouched
-GUIDE = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides\Guides\forever\Horde-01-14_Undead.lua"
+GUIDE = os.path.join(ADDONS, r"RXPGuides\Guides\forever\Horde-01-14_Undead.lua")
 MARK = "-- [RXPForever] "
 src, dst = (sys.argv[1], sys.argv[2]) if len(sys.argv) > 2 else (ORIGINAL, GUIDE)
 

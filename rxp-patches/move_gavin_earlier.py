@@ -3,9 +3,11 @@ Dawn in the Mountains pickup: from after the level-10 First Aid step -> right af
 (Kharanos inn, where Maxan Anvol stands). Gavin block: from just before Rudra -> right after the Kharanos hand-ins
 that end with Frosthowl (after Shimmer Ridge, ~level 9, before the trip west to Gnomeregan / Frostmane Hold).
 Only the main 06-11 guide is changed; the Hunter copy keeps its block before Rudra. Step count unchanged."""
+import os
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import sys
 
-G = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua"
+G = os.path.join(ADDONS, r"RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua")
 s = open(G, encoding="utf-8").read()
 if "#label GavinEarly" in s:
     sys.exit("already moved")

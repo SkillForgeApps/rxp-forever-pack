@@ -6,11 +6,14 @@ npc 1689, lvl 9-10, 71-87 x 33-58 - same ground east of the quarry as the Elder 
 Placement (both 06-11 Dun Morogh copies): accept right after the step that accepts Those Blasted Troggs! (Gol'Bolar
 Quarry); boar hides added to the Never Saddle pelt step; hand-in at Frast Dokner before heading back west to Rudra,
 `.turnin -95217,1` = skipped automatically if not on it or not complete (e.g. no Copper Bars yet). Idempotent."""
+import os
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
+REPO = r"."   # run from the pack folder
 import sys
 
 B = "|Tinterface/worldmap/chatbubble_64grey.blp:20|t"
-FILES = [r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua",
-         r"D:\wow-forever-addons\rxp-forever\patches\Alliance-1-14_DwarfGnome.PATCHED.lua"]
+FILES = [os.path.join(ADDONS, r"RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua"),
+         os.path.join(REPO, r"rxp-forever\patches\Alliance-1-14_DwarfGnome.PATCHED.lua")]
 
 ACCEPT = f"""step
     .goto Dun Morogh,68.8,55.8

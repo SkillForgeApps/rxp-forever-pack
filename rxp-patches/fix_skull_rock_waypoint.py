@@ -1,6 +1,6 @@
 """Give RXP's Undead "Hidden Enemies" Skull Rock step an arrow.
 
-28 Sep 2026, a Tauren warrior (RFC dungeon quests guide): "missing waypoint to Skull Rock". RXP's own
+28 Sep 2026, Gaz (a Tauren Warrior, RFC dungeon quests guide): "missing waypoint to Skull Rock". RXP's own
 forever/Horde-01-14_Undead.lua step `<< Undead` for 5726 (Lieutenant's Insignia) has ONE point written
 `.goto 1411/1,-4769.10,1484.39,0`. In RXP's parser (functions.lua goto: radius == 0 without the optional 5th field)
 that sets element.arrow = nil - the step never shows an arrow. RXPForever's RFC guide had copied that line (fixed in

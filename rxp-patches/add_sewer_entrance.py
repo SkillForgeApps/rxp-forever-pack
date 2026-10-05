@@ -7,9 +7,11 @@ sewer mouth outside in Tirisfal: 1420/0,724.25,1682.66. This adds that point as 
 (radius 30, hidden-intermediate like the rest), so the arrow leads to the entrance and then down the tunnel.
 Run once: python add_sewer_entrance.py
 """
+import os
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import sys
 
-G = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides\Guides\forever\Horde-01-14_Undead.lua"
+G = os.path.join(ADDONS, r"RXPGuides\Guides\forever\Horde-01-14_Undead.lua")
 MARK = "-- [RXPForever] sewer entrance"
 MOUTH = "1420/0,724.25,1682.66"   # outside end of RXP's own "Leave Undercity through the Sewers" chains
 

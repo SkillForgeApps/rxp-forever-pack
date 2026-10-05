@@ -6,9 +6,11 @@ object "Apothecary Society Primer" (405879) at Tirisfal Glades (uiMap 1420) 59.4
 (Carolai Anise) as you enter Brill; a comment (17 Sep) says it is on the potion shelf on the right.
 Run once: python add_metabook_waypoint.py
 """
+import os
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import sys
 
-G = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides\Guides\forever\Horde-01-14_Undead.lua"
+G = os.path.join(ADDONS, r"RXPGuides\Guides\forever\Horde-01-14_Undead.lua")
 MARK = "-- [RXPForever] MetaBook waypoint"
 
 text = open(G, encoding="utf-8", newline="").read()

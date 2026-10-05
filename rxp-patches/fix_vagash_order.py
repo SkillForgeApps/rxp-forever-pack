@@ -5,9 +5,11 @@ RXP shows "Go up the dirt path" + "Kite Vagash down to Rudra" (both #completewit
 top lines, killed Vagash twice with no quest and got no fang (the Fang of Vagash only drops while you're on the
 quest). This moves the Rudra accept step in front of the dirt-path step and adds a warning. Applied to both copies
 (6-11 Dun Morogh and the Hunter version). Idempotent."""
+import os
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import sys
 
-G = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua"
+G = os.path.join(ADDONS, r"RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua")
 s = open(G, encoding="utf-8").read()
 if "#label VagashPull" in s:
     sys.exit("already applied")

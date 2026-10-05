@@ -1,6 +1,6 @@
 """Clearer wording for the Mulgore guides' "Travel to The Barrens" step (text only - no step numbers move).
 
-Why (28 Sep 2026, a Tauren warrior, 06-12 Mulgore: "step 85 travel to the barrens, yet step 86 talk to omusa
+Why (28 Sep 2026, Gaz on a Tauren Warrior, 06-12 Mulgore: "step 85 travel to the barrens, yet step 86 talk to omusa
 get the camp taurajo flight path? is this right?"): the order IS right - Camp Taurajo is in The Barrens but sits just
 over Mulgore's eastern border, so the step only means "run east to Camp Taurajo" (it is #completewith the Camp Taurajo
 flight path step). The text read like a trip across the zone. No Thunder Bluff flight path step is needed: Tauren start

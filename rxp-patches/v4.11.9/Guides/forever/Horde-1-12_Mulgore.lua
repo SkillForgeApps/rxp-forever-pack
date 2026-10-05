@@ -62,6 +62,7 @@ step
 step
     .goto 1412/1,-522.37,-3052.65
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Greatmother Hawkwind|r
+    >>|cRXP_WARN_Pick your reward: |r|cRXP_LOOT_Mining for Dummies|r|cRXP_WARN_, |r|cRXP_LOOT_Pelt Collecting for Beginners|r|cRXP_WARN_ (Skinning) or |r|cRXP_LOOT_Wild Harvest|r|cRXP_WARN_ (Herbalism), then right-click it to learn the profession (+2 skill). If you already know a profession, pick that one|r
     .turnin 752 >>Turn in A Humble Task
     .accept 753 >>Accept A Humble Task
     .target Greatmother Hawkwind
@@ -99,6 +100,7 @@ step
     .goto 1412/1,-279.37,-2893.73
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kawnie|r
     >>|cRXP_BUY_Buy|r |T132384:0|t[Light Shots] |cRXP_BUY_from her|r << Hunter
+    >>|cRXP_WARN_If you took Mining or Skinning, buy a|r |T134708:0|t[Mining Pick] |cRXP_WARN_or|r |T134366:0|t[Skinning Knife] |cRXP_WARN_now (check her wares; otherwise in Bloodhoof Village or Thunder Bluff). Herbalism needs no tool|r
     .collect 2516,1000,750,1 << Hunter --Light Shot (1000)
     .vendor >> Vendor Trash
     .target Kawnie Softbreeze
@@ -134,6 +136,7 @@ step
     .goto 1412/1,-139.63,-3430.08
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Seer Graytongue|r
     >>|cRXP_WARN_Grind mobs on the way|r
+    >>|cRXP_WARN_Skip|r |cRXP_WARN_Grace of An'she and Mu'sha|r|cRXP_WARN_ (only 180xp, timed incense run to a far shrine)|r
     .turnin 755 >>Turn in Rites of the Earthmother
     .accept 757 >>Accept Rite of Strength
     .target Seer Graytongue
@@ -445,8 +448,14 @@ step
     .turnin 757 >>Turn in Rite of Strength
     .goto 1412/1,-221.83,-2878.31
     .accept 763 >>Accept Rites of the Earthmother
+    .accept 96659 >>Accept The Adventurer
     .target +Chief Hawkwind
     .goto 1412/1,-221.83,-2878.31
+step
+    .goto 1412/1,-279.37,-2893.73
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kawnie|r
+    .vendor >> Vendor Trash
+    .target Kawnie Softbreeze
 step << Shaman
     #completewith CallofEarth
     #label Rock
@@ -641,6 +650,79 @@ step
     .target Innkeeper Kauth
     .bindlocation 222
     .subzoneskip 222,1
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r|cRXP_WARN_ at her camp just outside Bloodhoof Village|r
+    .turnin 96659 >>Turn in The Adventurer
+    .accept 96605 >>Accept The Great Outdoors
+    .target Kaga Wildhoof
+    .isOnQuest 96659
+step
+    #optional
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r
+    .accept 96605 >>Accept The Great Outdoors
+    .target Kaga Wildhoof
+step
+    .goto 1412,46.2,67.2
+    >>|cRXP_WARN_Type /sit next to Kaga's campfire and wait one minute until you get the Boosted Rest buff|r
+    .complete 96605,1 --|1/1 Use the /sit emote near the campfire
+    .macro Sit,134400 >>/sit
+    .timer 59, RP
+    .complete 96605,2 --|Gain the Boosted Rest buff
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r
+    .turnin 96605 >>Turn in The Great Outdoors
+    .target Kaga Wildhoof
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Cooking - raise it to 20, then hand it in to |cRXP_FRIENDLY_Pyall Silentstride|r
+    .accept 96661 >>Accept Camping 101: Cooking
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your First Aid - raise it to 20, then hand it in to |cRXP_FRIENDLY_Vira Younghoof|r
+    .accept 97931 >>Accept Camping 101: First Aid
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill firstaid,<1,1 -- only if you have First Aid
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Fishing - raise it to 20, then hand it in to |cRXP_FRIENDLY_Uthan Stillwater|r
+    .accept 97932 >>Accept Camping 101: Fishing
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill fishing,<1,1 -- only if you have Fishing
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Herbalism - raise it to 20, then hand it in to |cRXP_FRIENDLY_Komin Winterhoof|r
+    .accept 97933 >>Accept Camping 101: Herbalism
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill herbalism,<1,1 -- only if you have Herbalism
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Leatherworking - raise it to 20, then hand it in to |cRXP_FRIENDLY_Chaw Stronghide|r
+    .accept 97934 >>Accept Camping 101: Leatherworking
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill leatherworking,<1,1 -- only if you have Leatherworking
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Mining - raise it to 20, then hand it in to |cRXP_FRIENDLY_Brek Stonehoof|r
+    .accept 97935 >>Accept Camping 101: Mining
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill mining,<1,1 -- only if you have Mining
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Skinning - raise it to 20, then hand it in to |cRXP_FRIENDLY_Yonn Deepcut|r
+    .accept 97936 >>Accept Camping 101: Skinning
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill skinning,<1,1 -- only if you have Skinning
 step << Shaman/Druid
     .goto 1412/1,-297.87,-2279.970
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Mahnott|r
@@ -1454,6 +1536,18 @@ step
     .accept 776 >>Accept Rites of the Earthmother
     .target Cairne Bloodhoof
 step
+    .goto 1456,34.6,57.6
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Brek Stonehoof|r
+    .turnin 97935 >>Turn in Camping 101: Mining
+    .target Brek Stonehoof
+    .isQuestComplete 97935
+step
+    .goto 1456,49.8,39.8
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Komin Winterhoof|r
+    .turnin 97933 >>Turn in Camping 101: Herbalism
+    .target Komin Winterhoof
+    .isQuestComplete 97933
+step
     #completewith next
     .zone Mulgore >> Take a lift back down to Mulgore
     .zoneskip Thunder Bluff,1
@@ -1798,6 +1892,37 @@ step << !Tauren
 step
     #optional
     #label Bloodhoofturnins1
+step
+    .goto 1412,45.4,58
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Pyall Silentstride|r
+    .train 2550 >>Train |T133971:0|t[Cooking]
+    .turnin 96661 >>Turn in Camping 101: Cooking
+    .target Pyall Silentstride
+    .isQuestComplete 96661
+step
+    .goto 1412,46.8,60.8
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Vira Younghoof|r
+    .turnin 97931 >>Turn in Camping 101: First Aid
+    .target Vira Younghoof
+    .isQuestComplete 97931
+step
+    .goto 1412,44.4,60.6
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Uthan Stillwater|r
+    .turnin 97932 >>Turn in Camping 101: Fishing
+    .target Uthan Stillwater
+    .isQuestComplete 97932
+step
+    .goto 1412,45.4,57.8
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Chaw Stronghide|r
+    .turnin 97934 >>Turn in Camping 101: Leatherworking
+    .target Chaw Stronghide
+    .isQuestComplete 97934
+step
+    .goto 1412,45.4,57.8
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Yonn Deepcut|r
+    .turnin 97936 >>Turn in Camping 101: Skinning
+    .target Yonn Deepcut
+    .isQuestComplete 97936
 step
     #completewith AlphaTeeth
     .destroy 4702 >> |cRXP_WARN_You can delete|r |T134707:0|t[Prospector's Picks] |cRXP_WARN_from your bags, as they're no longer needed|r
@@ -2311,6 +2436,18 @@ step
     .turnin 775 >>Turn in Journey into Thunder Bluff
     .accept 776 >>Accept Rites of the Earthmother
     .target Cairne Bloodhoof
+step
+    .goto 1456,34.6,57.6
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Brek Stonehoof|r
+    .turnin 97935 >>Turn in Camping 101: Mining
+    .target Brek Stonehoof
+    .isQuestComplete 97935
+step
+    .goto 1456,49.8,39.8
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Komin Winterhoof|r
+    .turnin 97933 >>Turn in Camping 101: Herbalism
+    .target Komin Winterhoof
+    .isQuestComplete 97933
 step << Druid
     #completewith next
     .goto 1456/1,-230.66,-1059.79,80 >>Travel to the Elder Rise
@@ -3218,6 +3355,7 @@ step
 step
     .goto 1412/1,-522.37,-3052.65
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Greatmother Hawkwind|r
+    >>|cRXP_WARN_Pick your reward: |r|cRXP_LOOT_Mining for Dummies|r|cRXP_WARN_, |r|cRXP_LOOT_Pelt Collecting for Beginners|r|cRXP_WARN_ (Skinning) or |r|cRXP_LOOT_Wild Harvest|r|cRXP_WARN_ (Herbalism), then right-click it to learn the profession (+2 skill). If you already know a profession, pick that one|r
     .turnin 752 >>Turn in A Humble Task
     .accept 753 >>Accept A Humble Task
     .target Greatmother Hawkwind
@@ -3255,6 +3393,7 @@ step
     .goto 1412/1,-279.37,-2893.73
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kawnie|r
     >>|cRXP_BUY_Buy|r |T132384:0|t[Light Shots] |cRXP_BUY_from her|r << Hunter
+    >>|cRXP_WARN_If you took Mining or Skinning, buy a|r |T134708:0|t[Mining Pick] |cRXP_WARN_or|r |T134366:0|t[Skinning Knife] |cRXP_WARN_now (check her wares; otherwise in Bloodhoof Village or Thunder Bluff). Herbalism needs no tool|r
     .collect 2516,1000,750,1 << Hunter --Light Shot (1000)
     .vendor >> Vendor Trash
     .target Kawnie Softbreeze
@@ -3290,6 +3429,7 @@ step
     .goto 1412/1,-139.63,-3430.08
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Seer Graytongue|r
     -->>|cRXP_WARN_Grind mobs on the way|r
+    >>|cRXP_WARN_Skip|r |cRXP_WARN_Grace of An'she and Mu'sha|r|cRXP_WARN_ (only 180xp, timed incense run to a far shrine)|r
     .turnin 755 >>Turn in Rites of the Earthmother
     .accept 757 >>Accept Rite of Strength
     .target Seer Graytongue
@@ -3543,8 +3683,14 @@ step
     .turnin 757 >>Turn in Rite of Strength
     .goto 1412/1,-221.83,-2878.31
     .accept 763 >>Accept Rites of the Earthmother
+    .accept 96659 >>Accept The Adventurer
     .target +Chief Hawkwind
     .goto 1412/1,-221.83,-2878.31
+step
+    .goto 1412/1,-279.37,-2893.73
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kawnie|r
+    .vendor >> Vendor Trash
+    .target Kawnie Softbreeze
 step << Shaman
     #completewith CallofEarth
     #label Rock
@@ -3740,6 +3886,79 @@ step
     .target Innkeeper Kauth
     .bindlocation 222
     .subzoneskip 222,1
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r|cRXP_WARN_ at her camp just outside Bloodhoof Village|r
+    .turnin 96659 >>Turn in The Adventurer
+    .accept 96605 >>Accept The Great Outdoors
+    .target Kaga Wildhoof
+    .isOnQuest 96659
+step
+    #optional
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r
+    .accept 96605 >>Accept The Great Outdoors
+    .target Kaga Wildhoof
+step
+    .goto 1412,46.2,67.2
+    >>|cRXP_WARN_Type /sit next to Kaga's campfire and wait one minute until you get the Boosted Rest buff|r
+    .complete 96605,1 --|1/1 Use the /sit emote near the campfire
+    .macro Sit,134400 >>/sit
+    .timer 59, RP
+    .complete 96605,2 --|Gain the Boosted Rest buff
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r
+    .turnin 96605 >>Turn in The Great Outdoors
+    .target Kaga Wildhoof
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Cooking - raise it to 20, then hand it in to |cRXP_FRIENDLY_Pyall Silentstride|r
+    .accept 96661 >>Accept Camping 101: Cooking
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your First Aid - raise it to 20, then hand it in to |cRXP_FRIENDLY_Vira Younghoof|r
+    .accept 97931 >>Accept Camping 101: First Aid
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill firstaid,<1,1 -- only if you have First Aid
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Fishing - raise it to 20, then hand it in to |cRXP_FRIENDLY_Uthan Stillwater|r
+    .accept 97932 >>Accept Camping 101: Fishing
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill fishing,<1,1 -- only if you have Fishing
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Herbalism - raise it to 20, then hand it in to |cRXP_FRIENDLY_Komin Winterhoof|r
+    .accept 97933 >>Accept Camping 101: Herbalism
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill herbalism,<1,1 -- only if you have Herbalism
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Leatherworking - raise it to 20, then hand it in to |cRXP_FRIENDLY_Chaw Stronghide|r
+    .accept 97934 >>Accept Camping 101: Leatherworking
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill leatherworking,<1,1 -- only if you have Leatherworking
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Mining - raise it to 20, then hand it in to |cRXP_FRIENDLY_Brek Stonehoof|r
+    .accept 97935 >>Accept Camping 101: Mining
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill mining,<1,1 -- only if you have Mining
+step
+    .goto 1412,46.2,67.2
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Kaga|r: Camping 101 for your Skinning - raise it to 20, then hand it in to |cRXP_FRIENDLY_Yonn Deepcut|r
+    .accept 97936 >>Accept Camping 101: Skinning
+    .target Kaga Wildhoof
+    .isQuestTurnedIn 96605
+    .skill skinning,<1,1 -- only if you have Skinning
 step << Shaman/Druid
     .goto 1412/1,-297.87,-2279.970
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Mahnott|r
@@ -5033,6 +5252,37 @@ step
     .turnin 743 >>Turn in Dangers of the Windfury
     .target +Ruul Eagletalon
     .goto 1412/1,-384.69,-2397.10
+step
+    .goto 1412,45.4,58
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Pyall Silentstride|r
+    .train 2550 >>Train |T133971:0|t[Cooking]
+    .turnin 96661 >>Turn in Camping 101: Cooking
+    .target Pyall Silentstride
+    .isQuestComplete 96661
+step
+    .goto 1412,46.8,60.8
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Vira Younghoof|r
+    .turnin 97931 >>Turn in Camping 101: First Aid
+    .target Vira Younghoof
+    .isQuestComplete 97931
+step
+    .goto 1412,44.4,60.6
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Uthan Stillwater|r
+    .turnin 97932 >>Turn in Camping 101: Fishing
+    .target Uthan Stillwater
+    .isQuestComplete 97932
+step
+    .goto 1412,45.4,57.8
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Chaw Stronghide|r
+    .turnin 97934 >>Turn in Camping 101: Leatherworking
+    .target Chaw Stronghide
+    .isQuestComplete 97934
+step
+    .goto 1412,45.4,57.8
+    >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to |cRXP_FRIENDLY_Yonn Deepcut|r
+    .turnin 97936 >>Turn in Camping 101: Skinning
+    .target Yonn Deepcut
+    .isQuestComplete 97936
 step
     #completewith AlphaTeeth
     .destroy 4702 >> |cRXP_WARN_You can delete|r |T134707:0|t[Prospector's Picks] |cRXP_WARN_from your bags, as they're no longer needed|r

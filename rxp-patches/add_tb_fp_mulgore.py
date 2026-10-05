@@ -1,6 +1,6 @@
 """Add a Thunder Bluff visit (flight path + Journey into Thunder Bluff) to both Mulgore routes, after A Sacred Burial.
 
-Why (28 Sep 2026, a Tauren warrior): the 6-12 route later flies you to Thunder Bluff from the Crossroads
+Why (28 Sep 2026, Gaz on a Tauren Warrior): the 6-12 route later flies you to Thunder Bluff from the Crossroads
 (Ride to Thunder Bluff) but never sends you to Tal first. RXP assumes Tauren start with the Thunder Bluff flight path -
 its Durotar guide gets it "<< !Tauren" - which is Classic behaviour; on Forever a new Tauren does NOT know it (Gaz had
 to pick it up himself). Gaz: "if you're going to get the TB FP then we should also hand in Journey into Thunder Bluff".

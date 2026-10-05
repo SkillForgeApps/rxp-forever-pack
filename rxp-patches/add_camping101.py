@@ -4,9 +4,11 @@ item recipe, 270 XP. Cooking: learn Cooking from Gremlock Pilsnor and hand in to
 pattern from forever/Alliance-1-13_Human.lua (one step per profession gated by `.skill <prof>,<1,1`); hand-ins
 are gated by `.isQuestComplete` so they only appear once the skill is 20.
 Run once: python add_camping101.py   (edits the installed guide in place; refuses to run twice)"""
+import os
+ADDONS = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns"   # edit if your game is elsewhere
 import sys
 
-G = r"D:\World of Warcraft\_classic_beta_\Interface\AddOns\RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua"
+G = os.path.join(ADDONS, r"RXPGuides\Guides\forever\Alliance-1-14_DwarfGnome.lua")
 BUBBLE = "|Tinterface/worldmap/chatbubble_64grey.blp:20|t"
 
 s = open(G, encoding="utf-8").read()
