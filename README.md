@@ -33,6 +33,10 @@ RestedXP forgets your guide, your step and your settings. This pack puts that da
   order) and *Shadowfang Keep*. They start from wherever you are and only send you where you still need to go.
   While one is active, all its quests in your log are ticked to show on the quest tracker, including ones Blizzard
   doesn't track by itself (quests with no counter, like *A Frightened Request*).
+- **Dungeon primers (Horde):** short guides under *Gaz & Claude Dungeon Primers (H)* that pick up a dungeon's quests,
+  get you to the entrance and hand the quests in afterwards. First one: *Primer - DG - Excavation Site (24-29) - Wetlands*
+  (Forever's new dungeon: Borstan in Orgrimmar, Zaruk in Hammerfall - needed for Open the Maw - then over Thandol Span to
+  the portal). Every quest in it can be shared, so one player in the group can do the pickups.
 - **Quest-log safety net:** a chat line warns when a quest in your log was left behind by the guide, or a chain was
   missed; `/rxpback` jumps back to it (`/rxpback check` lists them, `/rxpback off` mutes the warning).
 - **Class macro sets:** `/fmacros` adds ready-made macros to your character macro tab (Warrior: Tank Cycle).
@@ -63,7 +67,7 @@ RestedXP forgets your guide, your step and your settings. This pack puts that da
    - It finds your WoW Forever folder by itself, or asks you to pick it (the folder with `Interface` and `WTF` in it,
      e.g. `...\World of Warcraft\_classic_beta_`).
    - Windows may ask whether to run it. It's a plain PowerShell script you can read first: `install.ps1`.
-4. In game: `/reload`.
+4. In game: `/reload`. The first time, restart WoW instead - the game only finds a new addon folder at start-up.
 
 The helper starts hidden every time you log in to Windows. Its log is at `%LOCALAPPDATA%\RXPForeverSync\sync.log`.
 Nothing is sent anywhere. It only reads WoW's saved files and writes two addon files on this PC.
@@ -76,7 +80,7 @@ of this pack are replaced with the new fixes.
 ## Uninstall
 
 Right-click `uninstall.ps1` → **Run with PowerShell**. It stops and removes the helper, puts RestedXP's original files
-back, and removes the two addons. RestedXP itself stays installed.
+back, and removes the pack's addons. RestedXP itself stays installed.
 
 ## What's in here
 
@@ -84,6 +88,7 @@ back, and removes the two addons. RestedXP itself stays installed.
 |---|---|
 | `AddOns/RXPForever` | The main addon: catch-up, position restore, travel skip, auto hand-in, arrow summary, dungeon guides |
 | `AddOns/!ForeverSV` | Puts saved data back when the client loads empty; emergency reload button |
+| `AddOns/RXPGuides_DungeonPrimers` | Dungeon primers (quest pickups + route to the entrance) - our own guides, one file per dungeon |
 | `sync/ForeverSync.ps1` | The background helper |
 | `rxp-patches/v4.11.9` | The modified RestedXP files + `manifest.json` (fingerprints of the originals and the patched files) |
 | `rxp-patches/*.py` | The scripts that made each change, for reference |

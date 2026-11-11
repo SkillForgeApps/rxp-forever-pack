@@ -1,6 +1,6 @@
 <#
 RXP Forever pack uninstaller: stops the sync helper and removes it from startup, puts the original RestedXP files
-back from the .orig backups, and removes the RXPForever and !ForeverSV addons. RestedXP itself is left installed.
+back from the .orig backups, and removes the RXPForever, !ForeverSV and RXPGuides_DungeonPrimers addons. RestedXP itself is left installed.
 Run: powershell -ExecutionPolicy Bypass -File uninstall.ps1 [-WowPath "...\_classic_beta_"]
 #>
 param([string]$WowPath)
@@ -23,7 +23,7 @@ foreach ($orig in Get-ChildItem -Path (Join-Path $AddOns 'RXPGuides') -Filter '*
     Move-Item -LiteralPath $orig.FullName -Destination ($orig.FullName -replace '\.orig$', '') -Force
     Write-Host "Restored RestedXP file: $($orig.Name -replace '\.orig$', '')"
 }
-foreach ($name in 'RXPForever', '!ForeverSV') {
+foreach ($name in 'RXPForever', '!ForeverSV', 'RXPGuides_DungeonPrimers') {
     Remove-Item -LiteralPath (Join-Path $AddOns $name) -Recurse -Force -ErrorAction SilentlyContinue
     Write-Host "Removed addon: $name"
 }

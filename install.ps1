@@ -72,8 +72,8 @@ if (-not (Test-Path -LiteralPath $toc)) {
 $rxpVersion = ((Get-Content -LiteralPath $toc | Where-Object { $_ -match '^## Version:' }) -replace '^## Version:\s*', '').Trim()
 Say "RestedXP Guides found: $rxpVersion"
 
-# ---------- 3. our two addons ----------
-foreach ($name in 'RXPForever', '!ForeverSV') {
+# ---------- 3. our addons ----------
+foreach ($name in 'RXPForever', '!ForeverSV', 'RXPGuides_DungeonPrimers') {
     $src = Join-Path $Here "AddOns\$name"
     $dst = Join-Path $AddOns $name
     New-Item -ItemType Directory -Force -Path $dst | Out-Null
