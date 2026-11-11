@@ -1,7 +1,8 @@
 -- Dungeon primer: Excavation Site (Wetlands), Horde. Written 11 Nov 2026 (Gaz & Claude), our own text - no RXP paid content.
 -- Sources: Questie Forever DB (quest/NPC ids, Zaruk/Borstan/Bashana/Muln spots), Wowhead Forever (XP, all quests Sharable,
 -- Dragonmaw Rumors -> Open the Maw), dungeon guides (entrance ~47.9,56.4 on the hill SE of Whelgar's Excavation, Deathstalker
--- Agent beside the portal; Horde can't get Open the Maw without Dragonmaw Rumors). Thandol Span waypoint from RXP's own route.
+-- Horde can't get Open the Maw without Dragonmaw Rumors). Thandol Span waypoint from RXP's own route. 11 Nov fix: meeting stone
+-- 53.85,65.86 = Gaz's /wp point in game; agent 51.4,59.2 + portal 24.5,73.4 = warcraftmaps.com (client build 1.60.1.70685).
 RXPGuides.RegisterGuide([==[
 << Horde
 #version 1
@@ -71,15 +72,18 @@ step
     .zoneskip Wetlands
 step
     #completewith DeathstalkerAgent
-    .goto Wetlands,47.90,56.40,40 >> Cross the Wetlands south to the dungeon: a hill south-east of Whelgar's Excavation Site, reached by new roads
-    >>|cRXP_WARN_Dark Iron dwarves at Dun Modr (just past the bridge) and Menethil Harbor's guards (west coast) are hostile - stay on the inland road|r
+    .goto Wetlands,53.85,65.86,15 >> Follow the road south through the Wetlands, past Angerfang Encampment, to the meeting stone just west of Thelgen Rock (the spider cave). Stay on the road - don't cut across the hills
+    >>|cRXP_WARN_Dark Iron dwarves at Dun Modr (just past the bridge) are hostile|r
 step
     #label DeathstalkerAgent
-    .goto Wetlands,47.90,56.40
+    .goto Wetlands,51.40,59.20
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to the |cRXP_FRIENDLY_Deathstalker Agent|r beside the portal
     .turnin 95663 >> Turn in Dragonmaw Rumors
     .accept 95682 >> Accept Open the Maw
     .target Deathstalker Agent
+step
+    #completewith ExcavationRun
+    .goto Wetlands,24.50,73.40,20 >> From the meeting stone by Thelgen Rock, take the new path uphill heading west through the excavation. It ends at the portal, a tunnel mouth in the mountains on the Dun Morogh border
 step
     #completewith ExcavationRun
     +|cRXP_WARN_Group up and share|r |cRXP_FRIENDLY_Changing Tastes|r |cRXP_WARN_and|r |cRXP_FRIENDLY_Dragonmaw Rumors|r |cRXP_WARN_(quest log > Share). Each player hands Dragonmaw Rumors to the agent to get Open the Maw|r
@@ -96,7 +100,7 @@ step
     .accept 95664 >> Accept Elder Knowledge
     .use 270866
 step
-    .goto Wetlands,47.90,56.40
+    .goto Wetlands,51.40,59.20
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to the |cRXP_FRIENDLY_Deathstalker Agent|r outside the portal
     .turnin 95682 >> Turn in Open the Maw
     .target Deathstalker Agent
