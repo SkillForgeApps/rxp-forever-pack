@@ -2,7 +2,7 @@
 -- Sources: Questie Forever DB (quest/NPC ids, Zaruk/Borstan/Bashana/Muln spots), Wowhead Forever (XP, all quests Sharable,
 -- Dragonmaw Rumors -> Open the Maw), dungeon guides (entrance ~47.9,56.4 on the hill SE of Whelgar's Excavation, Deathstalker
 -- Horde can't get Open the Maw without Dragonmaw Rumors). Thandol Span waypoint from RXP's own route. 11 Nov fix: meeting stone
--- 53.85,65.86 = Gaz's /wp point in game; agent 51.4,59.2 + portal 24.5,73.4 = warcraftmaps.com (client build 1.60.1.70685).
+-- 53.85,65.86 = Gaz's /wp point in game; agent 51.42,59.46 = Gaz's /wp; portal 24.5,73.4 = warcraftmaps.com (client build 1.60.1.70685).
 RXPGuides.RegisterGuide([==[
 << Horde
 #version 1
@@ -76,7 +76,7 @@ step
     >>|cRXP_WARN_Dark Iron dwarves at Dun Modr (just past the bridge) are hostile|r
 step
     #label DeathstalkerAgent
-    .goto Wetlands,51.40,59.20
+    .goto Wetlands,51.42,59.46
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to the |cRXP_FRIENDLY_Deathstalker Agent|r beside the portal
     .turnin 95663 >> Turn in Dragonmaw Rumors
     .accept 95682 >> Accept Open the Maw
@@ -100,7 +100,7 @@ step
     .accept 95664 >> Accept Elder Knowledge
     .use 270866
 step
-    .goto Wetlands,51.40,59.20
+    .goto Wetlands,51.42,59.46
     >>|Tinterface/worldmap/chatbubble_64grey.blp:20|tTalk to the |cRXP_FRIENDLY_Deathstalker Agent|r outside the portal
     .turnin 95682 >> Turn in Open the Maw
     .target Deathstalker Agent
