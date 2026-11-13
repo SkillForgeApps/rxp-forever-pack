@@ -37,6 +37,9 @@ RestedXP forgets your guide, your step and your settings. This pack puts that da
   get you to the entrance and hand the quests in afterwards. First one: *Primer - DG - Excavation Site (24-29) - Wetlands*
   (Forever's new dungeon: Borstan in Orgrimmar, Zaruk in Hammerfall - needed for Open the Maw - then over Thandol Span to
   the portal). Every quest in it can be shared, so one player in the group can do the pickups.
+- **Levelling route (Horde):** *29-31 Mulgore + Thousand Needles (Excavation to RFK)* under *Gaz & Claude Routes (H)*:
+  carries on from the Excavation primer with Forever's Gloomrise quests north of Thunder Bluff (Broodmother optional),
+  then Thousand Needles, ending at the Shimmering Flats at about 31 with A Vengeful Fate ready for Razorfen Kraul.
 - **Quest-log safety net:** a chat line warns when a quest in your log was left behind by the guide, or a chain was
   missed; `/rxpback` jumps back to it (`/rxpback check` lists them, `/rxpback off` mutes the warning).
 - **Class macro sets:** `/fmacros` adds ready-made macros to your character macro tab (Warrior: Tank Cycle).
@@ -88,7 +91,7 @@ back, and removes the pack's addons. RestedXP itself stays installed.
 |---|---|
 | `AddOns/RXPForever` | The main addon: catch-up, position restore, travel skip, auto hand-in, arrow summary, dungeon guides |
 | `AddOns/!ForeverSV` | Puts saved data back when the client loads empty; emergency reload button |
-| `AddOns/RXPGuides_DungeonPrimers` | Dungeon primers (quest pickups + route to the entrance) - our own guides, one file per dungeon |
+| `AddOns/RXPGuides_DungeonPrimers` | Dungeon primers (quest pickups + route to the entrance) and our own levelling routes - one file per guide |
 | `sync/ForeverSync.ps1` | The background helper |
 | `rxp-patches/v4.11.9` | The modified RestedXP files + `manifest.json` (fingerprints of the originals and the patched files) |
 | `rxp-patches/*.py` | The scripts that made each change, for reference |

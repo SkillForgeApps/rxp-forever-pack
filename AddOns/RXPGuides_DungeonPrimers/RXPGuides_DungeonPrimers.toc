@@ -3,3 +3,4 @@
 ## Notes: Gets you to a dungeon with its quests picked up. RestedXP guide group "Gaz & Claude Dungeon Primers (H)".
 ## Dependencies: RXPGuides
 Primer_ExcavationSite.lua
+Route_MulgoreNeedles.lua
